@@ -137,6 +137,7 @@ export class WorkController {
           publishContentId,
           status: WORK_STATUS_ENUM.PUBLISH,
           latestPublishAt: new Date(),
+          isTemplate,
         });
         if (!res) return new SuccessRes(false);
       }
