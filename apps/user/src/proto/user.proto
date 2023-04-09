@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package user;
+
+service UserService {
+  rpc FindOne (UserByName) returns (UserRes) {}
+  rpc CreateUser (UserDto) returns (UserRes) {}
+}
+
+message UserDto {
+  required string username = 1;
+  required string password = 2;
+  required string phone = 3;
+}
+
+message UserByName {
+  string username = 1;
+  optional string password = 2;
+}
+
+message UserRes {
+  int32 errno = 1;
+  optional User data = 2;
+  optional string message = 3;
+}
+
+message User {
+  int32 id = 1;
+  string username = 2;
+  string phone = 3;
+  string password = 4;
+  string nickname = 5;
+  int32 gender = 6;
+  string picture = 7;
+  // int64 latestLoginAt = 8;
+  bool isFrozen = 9;
+  // int64 createAt = 10;
+  // int64 updateAt = 11;
+}

@@ -1,0 +1,88 @@
+syntax = "proto3";
+
+package work;
+
+service WorkService {
+  rpc CreateWork (CreateWorkDto) returns (WorkRes) {}
+  rpc FindOne (FindOneDto) returns (WorkRes) {}
+  rpc UpdateWork (UpdateWorkDto) returns (WorkRes) {}
+  rpc FindWorks (FindWorksDto) returns (WorksRes) {}
+  rpc PublishWork (PublishWorkDto) returns (PublishWorkRes) {}
+}
+
+message PublishWorkDto {
+  required int32 id = 1;
+  required string author = 2;
+  optional bool isTemplate = 3;
+}
+
+message PublishWorkRes {
+  int32 errno = 1;
+  optional bool data = 2;
+  optional string message = 3;
+}
+
+message FindWorksDto {
+  optional int32 pageIndex = 1;
+  optional int32 pageSize = 2;
+  optional int32 id = 3;
+  optional string uuid = 4;
+  optional string title = 5;
+  optional int32 status = 6;
+  optional string author = 7;
+  optional bool isTemplate = 8;
+}
+
+message UpdateWorkDto {
+  required int32 id = 1;
+  required string author = 2;
+  optional string title = 3;
+  optional string subtitle = 4;
+  optional string content = 5;
+  optional string coverImg = 6;
+  optional int32 copiedCount = 7;
+  optional int32 status = 8;
+  optional string receiver = 9;
+}
+
+message FindOneDto {
+  required int32 id = 1;
+  optional string author = 2;
+}
+
+message CreateWorkDto {
+  required string author = 1;
+  required string title= 2;
+  string subtitle = 3;
+  required string content = 4;
+}
+
+message WorkRes {
+  int32 errno = 1;
+  optional Work data = 2;
+  optional string message = 3;
+}
+
+message Work {
+  int32 id = 1;
+  string uuid = 2;
+  string title = 3;
+  optional string subtitle = 4;
+  string contentId = 5;
+  string author = 7;
+  optional string content = 8;
+  int32 status = 9;
+  optional int32 copiedCount = 10;
+  optional string coverImg = 11;
+}
+
+message WorksRes {
+  int32 errno = 1;
+  optional Works data = 2;
+  optional string message = 3;
+}
+
+message Works {
+  int32 total = 1;
+  repeated Work list = 2;
+}
