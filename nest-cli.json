@@ -13,6 +13,9 @@
   },
   "monorepo": true,
   "root": "apps/lowcode-server",
+  "generateOptions": {
+    "spec": false
+  },
   "projects": {
     "user": {
       "type": "application",
@@ -57,6 +60,15 @@
       "sourceRoot": "libs/common/src",
       "compilerOptions": {
         "tsConfigPath": "libs/common/tsconfig.lib.json"
+      }
+    },
+    "third-party": {
+      "type": "application",
+      "root": "apps/third-party",
+      "entryFile": "main",
+      "sourceRoot": "apps/third-party/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/third-party/tsconfig.app.json"
       }
     }
   }
