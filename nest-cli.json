@@ -70,6 +70,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/third-party/tsconfig.app.json"
       }
+    },
+    "library": {
+      "type": "application",
+      "root": "apps/library",
+      "entryFile": "main",
+      "sourceRoot": "apps/library/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/library/tsconfig.app.json"
+      }
     }
   }
 }

@@ -6,7 +6,12 @@ import { AllExceptionsFilter } from './filter/all-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(LowcodeServerModule);
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      // 去除在类上不存在的字段
+      whitelist: true,
+    }),
+  );
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalFilters(new AllExceptionsFilter());
   app.setGlobalPrefix('/api');

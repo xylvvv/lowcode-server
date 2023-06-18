@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package third_party;
+
+service ThirdPartyService {
+  rpc Upload(UploadDto) returns (CommonRes) {}
+  rpc Publish(PublishDto) returns (CommonRes) {}
+  rpc Read(ReadDto) returns (CommonRes) {}
+}
+
+message ReadDto {
+  required string file = 1;
+}
+
+message UploadDto {
+  required bytes file = 1;
+  optional string filename = 2;
+}
+
+message PublishDto {
+  required string path  = 1;
+  required string target = 2;
+}
+
+message CommonRes {
+  int32 errno = 1;
+  optional string data = 2;
+  optional string message = 3;
+}

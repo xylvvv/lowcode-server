@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package library;
+
+service LibraryService {
+  rpc FindLibraries(FindLibrariesDto) returns (LibrariesRes) {}
+  rpc CreateLibrary(CreateLibraryDto) returns (CommonRes) {}
+}
+
+message CreateLibraryDto {
+  string name = 1;
+  string version = 2;
+  string url = 3;
+  string remoteEntry = 4;
+  string scope = 5;
+  string author = 6;
+  repeated Component components = 7;
+}
+
+message FindLibrariesDto {
+  optional string author = 1;
+}
+
+message LibrariesRes {
+  int32 errno = 1;
+  repeated Library data = 2;
+  optional string message = 3;
+}
+
+message Library {
+  int32 id = 1;
+  string name = 2;
+  string currentVersion = 3;
+  string url = 4;
+  string remoteEntry = 5;
+  string scope = 6;
+  string author = 7;
+  repeated Component components = 8;
+}
+
+message Component {
+  string name = 1;
+  string path = 2;
+  string settingPath = 3;
+  string detailPath = 4;
+}
+
+message CommonRes {
+  int32 errno = 1;
+  optional bool data = 2;
+  optional string message = 3;
+}
+
