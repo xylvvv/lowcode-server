@@ -5,6 +5,30 @@ package library;
 service LibraryService {
   rpc FindLibraries(FindLibrariesDto) returns (LibrariesRes) {}
   rpc CreateLibrary(CreateLibraryDto) returns (CommonRes) {}
+  rpc FindLibVersions(FindLibVersionsDto) returns (LibVersionsRes) {}
+  rpc UpdateLibrary(UpdateLibraryDto) returns (CommonRes) {}
+}
+
+message UpdateLibraryDto {
+  required int32 id = 1;
+  required string author = 2;
+  string title = 3;
+  int32 currentVersion = 4;
+}
+
+message FindLibVersionsDto {
+  int32 id = 1;
+}
+
+message LibVersionsRes {
+  int32 errno = 1;
+  repeated Version data = 2;
+  optional string message = 3;
+}
+
+message Version {
+  int32 id = 1;
+  string version = 2;
 }
 
 message CreateLibraryDto {
@@ -36,6 +60,7 @@ message Library {
   string scope = 6;
   string author = 7;
   repeated Component components = 8;
+  string title = 9;
 }
 
 message Component {

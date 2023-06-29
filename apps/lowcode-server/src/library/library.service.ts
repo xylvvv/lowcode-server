@@ -23,4 +23,12 @@ export class LibraryService implements OnModuleInit {
   create(library: any) {
     return this.libraryService.createLibrary(library);
   }
+
+  findLibVersions(id: number) {
+    return this.libraryService.findLibVersions({ id });
+  }
+
+  update(library: any) {
+    return this.libraryService.UpdateLibrary(library);
+  }
 }

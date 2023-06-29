@@ -1,5 +1,7 @@
 import {
   ArrayNotEmpty,
+  IsNumber,
+  IsOptional,
   IsString,
   Matches,
   MaxLength,
@@ -43,4 +45,14 @@ class ComponentDto {
 
   @IsString()
   detailPath: string;
+}
+
+export class UpdateLibraryDto {
+  @IsString()
+  @IsOptional()
+  title?: string;
+
+  @IsNumber()
+  @IsOptional()
+  currentVersion?: number;
 }

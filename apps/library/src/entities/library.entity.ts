@@ -21,20 +21,14 @@ export class Library {
   })
   name: string;
 
+  @Column({ comment: '组件库标题', nullable: true })
+  title: string;
+
   @JoinColumn({ name: 'current_version' })
   @OneToOne(() => LibraryVersion, {
     cascade: true,
   })
   currentVersion: LibraryVersion;
-
-  @Column({ comment: '远程库请求url' })
-  url: string;
-
-  @Column({ comment: '远程库入口文件名称', name: 'remote_entry' })
-  remoteEntry: string;
-
-  @Column({ comment: '远程库作用域（name）' })
-  scope: string;
 
   @Column({ comment: '是否公开', default: false, name: 'is_public' })
   isPublic: boolean;

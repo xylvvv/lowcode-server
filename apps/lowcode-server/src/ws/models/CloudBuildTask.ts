@@ -71,7 +71,9 @@ class CloudBuildTask {
       this.client.emit('building', '构建前检查成功');
     } catch (error) {
       this.logger.error(
-        `任务${this.client.id}构建前检查失败，失败原因：${error.message}`,
+        `任务${this.client.id}构建前检查失败，失败原因：${
+          error?.message || error
+        }`,
       );
       throw new Error(`构建前检查失败，失败原因：${error.message}`);
     }
@@ -83,10 +85,12 @@ class CloudBuildTask {
       await this._git.clone(this._repo);
       this._git = Git(this._sourceCodeDir);
       await this._git.checkout(['-b', this._branch, `origin/${this._branch}`]);
-      this.client.emit('building', '源码下载成功');
+      this.client.emit('building', `源码下载成功(origin/${this._branch})`);
     } catch (error) {
       this.logger.error(
-        `任务${this.client.id}源码下载失败，失败原因：${error.message}`,
+        `任务${this.client.id}源码下载失败，失败原因：${
+          error?.message || error
+        }`,
       );
       throw new Error('源码下载失败');
     }
@@ -100,7 +104,11 @@ class CloudBuildTask {
       );
       this.client.emit('building', '依赖安装成功');
     } catch (error) {
-      this.logger.error(`任务${this.client.id}依赖安装失败`);
+      this.logger.error(
+        `任务${this.client.id}依赖安装失败，失败原因：${
+          error?.message || error
+        }`,
+      );
       throw new Error('依赖安装失败');
     }
   }
@@ -115,40 +123,75 @@ class CloudBuildTask {
       }
       this.client.emit('building', '构建命令执行成功');
     } catch (error) {
-      this.logger.error(`任务${this.client.id}构建命令执行失败`);
+      this.logger.error(
+        `任务${this.client.id}构建命令执行失败，失败原因：${
+          error?.message || error
+        }`,
+      );
       throw new Error('构建命令执行失败');
     }
   }
 
   async prePublish() {
-    if (!existsSync(this._buildDir)) {
-      throw new Error('构建产物目录不存在');
+    try {
+      this.client.emit('building', '开始进行发布前检查');
+      if (!existsSync(this._buildDir)) {
+        throw new Error('构建产物目录不存在');
+      }
+      this.client.emit('building', '发布前检查成功');
+    } catch (error) {
+      this.logger.error(
+        `任务${this.client.id}发布前检查失败，失败原因：${
+          error?.message || error
+        }`,
+      );
+      throw new Error('发布前检查失败');
     }
   }
 
   async publish() {
-    const res = await this.thirdPartyService.publish(
-      this._buildDir,
-      `${this._name}/${this._version}`,
-    );
-    if (res.errno) {
-      throw new Error('构建产物发布失败');
-    }
-    if (this._firstPublish) {
-      const res2 = await this.thirdPartyService.upload(
-        Buffer.from(this._repo),
-        `${this._name}/${OSS_REMOTE_FILE}`,
+    try {
+      this.client.emit('building', '开始进行发布');
+      const res = await this.thirdPartyService.publish(
+        this._buildDir,
+        `${this._name}/${this._version}`,
       );
-      if (res2.errno) {
-        throw new Error('远程仓库地址信息发布失败');
+      if (res.errno) {
+        throw new Error('构建产物发布失败');
       }
+      if (this._firstPublish) {
+        const res2 = await this.thirdPartyService.upload(
+          Buffer.from(this._repo),
+          `${this._name}/${OSS_REMOTE_FILE}`,
+        );
+        if (res2.errno) {
+          throw new Error('远程仓库地址信息发布失败');
+        }
+      }
+      this.client.emit('building', '发布成功');
+    } catch (error) {
+      this.logger.error(
+        `任务${this.client.id}发布失败，失败原因：${error?.message || error}`,
+      );
+      throw new Error('发布失败');
     }
   }
 
   clean() {
-    if (existsSync(this._dir)) {
-      this.logger.log('do clean', this._dir);
-      fse.removeSync(this._dir);
+    try {
+      this.client.emit('building', '开始进行发布后清理');
+      if (existsSync(this._dir)) {
+        this.logger.log('do clean', this._dir);
+        fse.removeSync(this._dir);
+      }
+      this.client.emit('building', '发布后清理成功');
+    } catch (error) {
+      this.logger.error(
+        `任务${this.client.id}发布后清理失败，失败原因：${
+          error?.message || error
+        }`,
+      );
+      throw new Error('发布后清理失败');
     }
   }
 
@@ -166,6 +209,7 @@ class CloudBuildTask {
         if (!c) {
           resolve(true);
         } else {
+          this.logger.error(`'${command}'命令执行失败`);
           reject(c);
         }
       });

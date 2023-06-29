@@ -6,6 +6,7 @@ import { LibraryService } from './library.service';
 import { Library } from './entities/library.entity';
 import { LibraryVersion } from './entities/library-version.entity';
 import { Component } from './entities/component.entity';
+import { LibraryConfig } from './entities/library-config.entity';
 import DatabaseConfig from './config/database.config';
 
 @Module({
@@ -22,7 +23,12 @@ import DatabaseConfig from './config/database.config';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([Library, LibraryVersion, Component]),
+    TypeOrmModule.forFeature([
+      Library,
+      LibraryVersion,
+      Component,
+      LibraryConfig,
+    ]),
   ],
   controllers: [LibraryController],
   providers: [LibraryService],
