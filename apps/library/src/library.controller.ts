@@ -29,15 +29,14 @@ export class LibraryController {
                 author,
               });
             }
-            const {
-              currentVersion: { version, id },
-              title,
-            } = config || item;
-            const { components, url, scope, remoteEntry } =
-              await this.libraryService.libVersionDetail(id);
+            const { currentVersion, title } = config || item;
+            const { id, version, url, scope, remoteEntry } = currentVersion;
+            const { components } = await this.libraryService.libVersionDetail(
+              id,
+            );
             return {
               ...item,
-              currentVersion: version,
+              currentVersion: { id, version },
               components,
               title,
               url,
@@ -50,7 +49,6 @@ export class LibraryController {
       );
       return new SuccessRes(data);
     } catch (error) {
-      console.log(error);
       return new ErrorRes({
         errno: ERRNO_ENUM.LIB_FIND_FAILED,
         message: '列表获取失败',
@@ -61,30 +59,22 @@ export class LibraryController {
   @GrpcMethod('LibraryService', 'CreateLibrary')
   async createLibrary(dto: CreateLibraryDto) {
     try {
-      const {
-        name,
-        author,
+      const { name, author, version, components, url, scope, remoteEntry } =
+        dto;
+      const currentVersion = {
+        library: name,
         version,
         components,
         url,
         scope,
         remoteEntry,
-        ...rest
-      } = dto;
+      };
       const lib = await this.libraryService.findOne({ name });
       if (!lib) {
         await this.libraryService.createLibrary({
-          ...rest,
           name,
           author,
-          currentVersion: {
-            library: name,
-            version,
-            components,
-            url,
-            scope,
-            remoteEntry,
-          },
+          currentVersion,
         });
         return new SuccessRes(true);
       } else if (lib.author !== author) {
@@ -104,13 +94,8 @@ export class LibraryController {
         });
       }
       await this.libraryService.createLibrary({
-        ...rest,
         id: lib.id,
-        currentVersion: {
-          library: name,
-          version,
-          components,
-        },
+        currentVersion,
       });
       return new SuccessRes(true);
     } catch (error) {

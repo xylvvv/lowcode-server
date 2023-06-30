@@ -54,7 +54,7 @@ message LibrariesRes {
 message Library {
   int32 id = 1;
   string name = 2;
-  string currentVersion = 3;
+  Version currentVersion = 3;
   string url = 4;
   string remoteEntry = 5;
   string scope = 6;
