@@ -8,7 +8,7 @@ export class WorkContent {
   components: Record<string, any>[];
   // 页面属性， 如页面背景图片
   @Prop({ type: Object })
-  props: Record<string, any>;
+  page: Record<string, any>;
   // 配置信息， 如微信分享配置
   @Prop({ type: Object })
   setting: Record<string, any>;

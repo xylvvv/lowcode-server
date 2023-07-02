@@ -22,11 +22,11 @@ export class WorkService {
   ) {}
 
   async createWork(content: WorkContent, work: Partial<Work>) {
-    const { components = [], setting = {}, props = [] } = content;
+    const { components = [], setting = {}, page = [] } = content;
     const { _id } = await this.workContentModel.create({
       components,
       setting,
-      props,
+      page,
     });
     const entity = this.workRepository.create({
       ...work,
@@ -101,18 +101,18 @@ export class WorkService {
     publishContentId?: string,
   ) {
     if (!content) return;
-    const { components = [], props = {}, setting = {} } = content;
+    const { components = [], page = {}, setting = {} } = content;
     if (publishContentId) {
       await this.workPublishContentModel.findByIdAndUpdate(publishContentId, {
         components,
-        props,
+        page,
         setting,
       });
       return publishContentId;
     }
     const newPublishContent = await this.workPublishContentModel.create({
       components,
-      props,
+      page,
       setting,
     });
     return newPublishContent._id.toString();
