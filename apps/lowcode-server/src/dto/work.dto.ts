@@ -21,19 +21,26 @@ export class CreateWorkDto {
 }
 
 export class FindWorksDto {
-  title?: string;
+  @IsOptional()
+  title: string;
 
-  status?: string;
+  @IsOptional()
+  status: string;
 
-  isTemplate?: string;
+  @IsOptional()
+  isTemplate: string;
 
-  pageIndex?: string;
+  @IsOptional()
+  pageIndex: string;
 
-  pageSize?: string;
+  @IsOptional()
+  pageSize: string;
 
-  id?: string;
+  @IsOptional()
+  id: string;
 
-  uuid?: string;
+  @IsOptional()
+  uuid: string;
 }
 
 export class PublishWorkDto {

@@ -74,6 +74,7 @@ message Work {
   int32 status = 9;
   optional int32 copiedCount = 10;
   optional string coverImg = 11;
+  bool isTemplate = 12;
 }
 
 message WorksRes {

@@ -92,7 +92,6 @@ export class WorkController {
   @GrpcMethod('WorkService', 'FindWorks')
   async findWorks(findWorksDto: Partial<Work> & IPageInfo) {
     const { pageIndex, pageSize, ...rest } = findWorksDto;
-    console.log(rest);
     try {
       const res = await this.workService.findWorks(rest, {
         pageIndex,
