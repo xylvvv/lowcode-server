@@ -22,7 +22,7 @@ export class WorkService {
   ) {}
 
   async createWork(content: WorkContent, work: Partial<Work>) {
-    const { components = [], setting = {}, page = [] } = content;
+    const { components = [], setting = {}, page = {} } = content;
     const { _id } = await this.workContentModel.create({
       components,
       setting,
