@@ -17,8 +17,11 @@ export class WorkController {
   @GrpcMethod('WorkService', 'CreateWork')
   async createWork(createWorkDto: CreateWorkDto) {
     try {
-      const { content = '{}', ...rest } = createWorkDto;
-      const res = await this.workService.createWork(JSON.parse(content), rest);
+      const { content, ...rest } = createWorkDto;
+      const res = await this.workService.createWork(
+        content ? JSON.parse(content) : {},
+        rest,
+      );
       return new SuccessRes(res);
     } catch (e) {
       return new ErrorRes({

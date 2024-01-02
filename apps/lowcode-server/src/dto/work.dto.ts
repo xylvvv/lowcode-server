@@ -17,6 +17,7 @@ export class CreateWorkDto {
   subtitle?: string;
 
   @IsObject()
+  @IsOptional()
   content: any;
 }
 

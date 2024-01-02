@@ -53,8 +53,8 @@ message FindOneDto {
 message CreateWorkDto {
   required string author = 1;
   required string title= 2;
-  string subtitle = 3;
-  required string content = 4;
+  optional string subtitle = 3;
+  optional string content = 4;
 }
 
 message WorkRes {

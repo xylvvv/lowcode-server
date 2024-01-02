@@ -4,7 +4,7 @@ export class CreateWorkDto {
   author: string;
   title: string;
   subtitle?: string;
-  content: string;
+  content?: string;
 }
 
 export class FindOneDto {
