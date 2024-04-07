@@ -100,7 +100,7 @@ class CloudBuildTask {
     try {
       this.client.emit('building', '开始安装依赖');
       await this.execCommand(
-        'npm install --registry=https://registry.npm.taobao.org',
+        'npm install --registry=https://registry.npmmirror.com/',
       );
       this.client.emit('building', '依赖安装成功');
     } catch (error) {
