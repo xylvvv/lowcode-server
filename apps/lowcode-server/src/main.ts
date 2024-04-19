@@ -1,8 +1,9 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { LowcodeServerModule } from './lowcode-server.module';
-import { HttpExceptionFilter } from './filter/http-exception.filter';
-import { AllExceptionsFilter } from './filter/all-exception.filter';
+import { HttpExceptionFilter } from '@lib/common/filters/http-exception.filter';
+import { AllExceptionsFilter } from '@lib/common/filters/all-exception.filter';
+import { TransformInterceptor } from '@lib/common/interceptors/transform.interceptor';
 
 async function bootstrap() {
   const app = await NestFactory.create(LowcodeServerModule);
@@ -12,8 +13,8 @@ async function bootstrap() {
       whitelist: true,
     }),
   );
-  app.useGlobalFilters(new HttpExceptionFilter());
-  app.useGlobalFilters(new AllExceptionsFilter());
+  app.useGlobalFilters(new AllExceptionsFilter(), new HttpExceptionFilter());
+  app.useGlobalInterceptors(new TransformInterceptor());
   app.setGlobalPrefix('/api');
   await app.listen(3000);
 }

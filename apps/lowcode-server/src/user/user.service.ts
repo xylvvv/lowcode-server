@@ -1,9 +1,10 @@
-import { ERRNO_ENUM } from '@lib/common/enums/errno.enum';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
+
 import { IUserMicroService } from 'apps/user/src/user.controller';
 import { User } from 'apps/user/src/user.entity';
-import { firstValueFrom } from 'rxjs';
+import { BusinessException } from '@lib/common/exceptions/business.exception';
 
 @Injectable()
 export class UserService implements OnModuleInit {
@@ -20,23 +21,19 @@ export class UserService implements OnModuleInit {
 
   async createUser(user: User) {
     const res = await firstValueFrom(this.userService.createUser(user));
-    if (!res.errno) {
-      return res.data;
-    } else {
-      throw res;
+    if (res.errno) {
+      throw new BusinessException(res.errno, res.message);
     }
+    return res.data;
   }
 
   async findOne(username: string, password?: string) {
     const res = await firstValueFrom(
       this.userService.findOne({ username, password }),
     );
-    if (!res.errno) {
-      return res.data;
-    } else if (res.errno === ERRNO_ENUM.USER_NOT_EXIST) {
-      return null;
-    } else {
-      throw res;
+    if (res.errno) {
+      throw new BusinessException(res.errno, res.message);
     }
+    return res.data;
   }
 }

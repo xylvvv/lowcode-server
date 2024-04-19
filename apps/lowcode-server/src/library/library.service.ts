@@ -1,6 +1,9 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
+
 import { ILibraryMicroService } from 'apps/library/src/library.controller';
+import { BusinessException } from '@lib/common/exceptions/business.exception';
 
 @Injectable()
 export class LibraryService implements OnModuleInit {
@@ -16,19 +19,43 @@ export class LibraryService implements OnModuleInit {
       this.client.getService<ILibraryMicroService>('LibraryService');
   }
 
-  findAll(author?: string) {
-    return this.libraryService.findLibraries({ author });
+  async findAll(author?: string) {
+    const res = await firstValueFrom(
+      this.libraryService.findLibraries({ author }),
+    );
+    if (res.errno) {
+      throw new BusinessException(res.errno, res.message);
+    }
+    return res.data;
   }
 
-  create(library: any) {
-    return this.libraryService.createLibrary(library);
+  async create(library: any) {
+    const res = await firstValueFrom(
+      this.libraryService.createLibrary(library),
+    );
+    if (res.errno) {
+      throw new BusinessException(res.errno, res.message);
+    }
+    return res.data;
   }
 
-  findLibVersions(id: number) {
-    return this.libraryService.findLibVersions({ id });
+  async findLibVersions(id: number) {
+    const res = await firstValueFrom(
+      this.libraryService.findLibVersions({ id }),
+    );
+    if (res.errno) {
+      throw new BusinessException(res.errno, res.message);
+    }
+    return res.data;
   }
 
-  update(library: any) {
-    return this.libraryService.UpdateLibrary(library);
+  async update(library: any) {
+    const res = await firstValueFrom(
+      this.libraryService.UpdateLibrary(library),
+    );
+    if (res.errno) {
+      throw new BusinessException(res.errno, res.message);
+    }
+    return res.data;
   }
 }

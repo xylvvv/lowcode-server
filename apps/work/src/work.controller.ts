@@ -2,13 +2,13 @@ import { Controller } from '@nestjs/common';
 import { WorkService } from './work.service';
 import { GrpcMethod } from '@nestjs/microservices';
 import { CreateWorkDto, FindOneDto, PublishWorkDto } from './dto/work.dto';
-import { ErrorRes, SuccessRes } from '@lib/common/dto/res.dto';
 import { ERRNO_ENUM } from '@lib/common/enums/errno.enum';
 import { MicroServiceType } from '@lib/common/types/micro-service.type';
 import { WorkContent } from './work-content.schema';
 import { Work } from './work.entity';
 import { IPageInfo } from '@lib/common/types/page-info.type';
 import { WORK_STATUS_ENUM } from '@lib/common/enums/work-status.enum';
+import { RpcBusinessException } from '@lib/common/exceptions/business.exception';
 
 @Controller()
 export class WorkController {
@@ -22,12 +22,12 @@ export class WorkController {
         content ? JSON.parse(content) : {},
         rest,
       );
-      return new SuccessRes(res);
+      return res;
     } catch (e) {
-      return new ErrorRes({
-        message: '作品创建失败',
-        errno: ERRNO_ENUM.WORK_CREATE_FAILED,
-      });
+      throw new RpcBusinessException(
+        ERRNO_ENUM.WORK_CREATE_FAILED,
+        '作品创建失败',
+      );
     }
   }
 
@@ -39,21 +39,18 @@ export class WorkController {
         content: WorkContent;
       };
       if (res) {
-        return new SuccessRes({
+        return {
           ...res,
           content: res.content ? JSON.stringify(res.content) : '',
-        });
+        };
       } else {
-        return new ErrorRes({
-          message: '作品不存在',
-          errno: ERRNO_ENUM.WORK_NOT_EXIST,
-        });
+        throw new RpcBusinessException(ERRNO_ENUM.WORK_NOT_EXIST, '作品不存在');
       }
     } catch (error) {
-      return new ErrorRes({
-        message: '作品查询失败',
-        errno: ERRNO_ENUM.WORK_FIND_FAILED,
-      });
+      throw new RpcBusinessException(
+        ERRNO_ENUM.WORK_FIND_FAILED,
+        '作品查询失败',
+      );
     }
   }
 
@@ -65,10 +62,7 @@ export class WorkController {
       const { id, author, content, receiver, ...rest } = updateWorkDto;
       const work = await this.workService.findOne(id, author);
       if (!work) {
-        return new ErrorRes({
-          message: '作品不存在',
-          errno: ERRNO_ENUM.WORK_NOT_EXIST,
-        });
+        throw new RpcBusinessException(ERRNO_ENUM.WORK_NOT_EXIST, '作品不存在');
       }
       await this.workService.updateWork(
         {
@@ -79,16 +73,16 @@ export class WorkController {
         },
         content ? JSON.parse(content) : null,
       );
-      return new SuccessRes({
+      return {
         ...work,
         ...rest,
         content,
-      });
+      };
     } catch (error) {
-      return new ErrorRes({
-        message: '作品更新失败',
-        errno: ERRNO_ENUM.WORK_UPDATE_FAILED,
-      });
+      throw new RpcBusinessException(
+        ERRNO_ENUM.WORK_UPDATE_FAILED,
+        '作品更新失败',
+      );
     }
   }
 
@@ -100,12 +94,12 @@ export class WorkController {
         pageIndex,
         pageSize,
       });
-      return new SuccessRes(res);
+      return res;
     } catch (error) {
-      return new ErrorRes({
-        message: '作品查询失败',
-        errno: ERRNO_ENUM.WORK_FIND_FAILED,
-      });
+      throw new RpcBusinessException(
+        ERRNO_ENUM.WORK_FIND_FAILED,
+        '作品查询失败',
+      );
     }
   }
 
@@ -116,16 +110,16 @@ export class WorkController {
       content: WorkContent;
     };
     if (!work) {
-      return new ErrorRes({
-        message: '非本人作品',
-        errno: ERRNO_ENUM.WORK_AUTHOR_MISMATCHING,
-      });
+      throw new RpcBusinessException(
+        ERRNO_ENUM.WORK_AUTHOR_MISMATCHING,
+        '非本人作品',
+      );
     }
     if (work.status === WORK_STATUS_ENUM.OFFLINE) {
-      return new ErrorRes({
-        message: '作品已下线',
-        errno: ERRNO_ENUM.WORK_FORCE_OFFLINE,
-      });
+      throw new RpcBusinessException(
+        ERRNO_ENUM.WORK_FORCE_OFFLINE,
+        '作品已下线',
+      );
     }
     try {
       const publishContentId =
@@ -141,14 +135,14 @@ export class WorkController {
           latestPublishAt: new Date(),
           isTemplate,
         });
-        if (!res) return new SuccessRes(false);
+        if (!res) return false;
       }
-      return new SuccessRes(true);
+      return true;
     } catch (error) {
-      return new ErrorRes({
-        message: '作品发布失败',
-        errno: ERRNO_ENUM.WORK_PUBLISH_FAILED,
-      });
+      throw new RpcBusinessException(
+        ERRNO_ENUM.WORK_PUBLISH_FAILED,
+        '作品发布失败',
+      );
     }
   }
 }

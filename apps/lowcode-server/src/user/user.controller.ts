@@ -1,4 +1,3 @@
-import { ErrorRes, SuccessRes } from '@lib/common/dto/res.dto';
 import {
   Controller,
   Post,
@@ -8,6 +7,7 @@ import {
   Request,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+
 import { User } from 'apps/user/src/user.entity';
 import { AuthService } from '../auth/auth.service';
 import { LoginReqDto } from '../dto/user.dto';
@@ -23,30 +23,21 @@ export class UserController {
   @Post('login')
   async login(@Body() loginReqDto: LoginReqDto) {
     const { username, password } = loginReqDto;
+    let user;
     try {
-      const res = await this.userService.findOne(username, password);
-      let user;
-      if (res) {
-        user = res;
-      } else {
-        user = await this.userService.createUser(loginReqDto as User);
-      }
-      const payload = { username: user.username, sub: user.id };
-      return new SuccessRes({
-        access_token: this.authService.sign(payload),
-      });
+      user = await this.userService.findOne(username, password);
     } catch (error) {
-      if (error instanceof Error) {
-        return new ErrorRes({ message: error.message, errno: -1 });
-      } else {
-        return error;
-      }
+      user = await this.userService.createUser(loginReqDto as User);
     }
+    const payload = { username: user.username, sub: user.id };
+    return {
+      access_token: this.authService.sign(payload),
+    };
   }
 
   @Get()
   @UseGuards(AuthGuard('jwt'))
   find(@Request() req) {
-    return new SuccessRes(req.user);
+    return req.user;
   }
 }

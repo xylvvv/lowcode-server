@@ -1,4 +1,7 @@
 export enum ERRNO_ENUM {
+  // 公共错误码
+  COMMON = 10000,
+
   USER_NOT_EXIST = 10001,
   PASSWORD_ERROR = 10002,
   USER_CREATE_FAILED = 10003,

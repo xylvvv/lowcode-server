@@ -3,8 +3,8 @@ import { GrpcMethod } from '@nestjs/microservices';
 import { from, map, scan, lastValueFrom } from 'rxjs';
 
 import { MicroServiceType } from '@lib/common/types/micro-service.type';
-import { ErrorRes, SuccessRes } from '@lib/common/dto/res.dto';
 import { ERRNO_ENUM } from '@lib/common/enums/errno.enum';
+import { RpcBusinessException } from '@lib/common/exceptions/business.exception';
 
 import { LibraryService } from './library.service';
 import { CreateLibraryDto } from './dto/create-library.dto';
@@ -47,12 +47,12 @@ export class LibraryController {
           scan(async (acc, crt) => [...(await acc), await crt], []),
         ),
       );
-      return new SuccessRes(data);
+      return data;
     } catch (error) {
-      return new ErrorRes({
-        errno: ERRNO_ENUM.LIB_FIND_FAILED,
-        message: '列表获取失败',
-      });
+      throw new RpcBusinessException(
+        ERRNO_ENUM.LIB_FIND_FAILED,
+        '列表获取失败',
+      );
     }
   }
 
@@ -76,33 +76,30 @@ export class LibraryController {
           author,
           currentVersion,
         });
-        return new SuccessRes(true);
+        return true;
       } else if (lib.author !== author) {
-        return new ErrorRes({
-          errno: ERRNO_ENUM.LIB_EXISTED,
-          message: '组件库已存在',
-        });
+        throw new RpcBusinessException(ERRNO_ENUM.LIB_EXISTED, '组件库已存在');
       }
       const versions = await this.libraryService.getVersions({
         library: name,
         version,
       });
       if (versions.length) {
-        return new ErrorRes({
-          errno: ERRNO_ENUM.LIB_VERSION_EXISTED,
-          message: '当前版本已存在',
-        });
+        throw new RpcBusinessException(
+          ERRNO_ENUM.LIB_VERSION_EXISTED,
+          '当前版本已存在',
+        );
       }
       await this.libraryService.createLibrary({
         id: lib.id,
         currentVersion,
       });
-      return new SuccessRes(true);
+      return true;
     } catch (error) {
-      return new ErrorRes({
-        errno: ERRNO_ENUM.LIB_CREATE_FAILED,
-        message: '组件库创建失败',
-      });
+      throw new RpcBusinessException(
+        ERRNO_ENUM.LIB_CREATE_FAILED,
+        '组件库创建失败',
+      );
     }
   }
 
@@ -111,19 +108,18 @@ export class LibraryController {
     try {
       const lib = await this.libraryService.findOne({ id });
       if (!lib) {
-        return new ErrorRes({
-          errno: ERRNO_ENUM.LIB_FIND_FAILED,
-          message: '组件库不存在',
-        });
+        throw new RpcBusinessException(
+          ERRNO_ENUM.LIB_FIND_FAILED,
+          '组件库不存在',
+        );
       }
       const { name } = lib;
-      const versions = await this.libraryService.getVersions({ library: name });
-      return new SuccessRes(versions);
+      return await this.libraryService.getVersions({ library: name });
     } catch (error) {
-      return new ErrorRes({
-        errno: ERRNO_ENUM.LIB_VERSIONS_FIND_FAILED,
-        message: '版本获取失败',
-      });
+      throw new RpcBusinessException(
+        ERRNO_ENUM.LIB_VERSIONS_FIND_FAILED,
+        '版本获取失败',
+      );
     }
   }
 
@@ -133,10 +129,10 @@ export class LibraryController {
       const { id, author, title, currentVersion } = dto;
       const lib = await this.libraryService.findOne({ id });
       if (!lib || (lib.author !== author && !lib.isPublic)) {
-        return new ErrorRes({
-          errno: ERRNO_ENUM.LIB_FIND_FAILED,
-          message: '组件库不存在',
-        });
+        throw new RpcBusinessException(
+          ERRNO_ENUM.LIB_FIND_FAILED,
+          '组件库不存在',
+        );
       }
       const payload: Partial<Library> = { id, title };
       if (currentVersion) {
@@ -162,12 +158,9 @@ export class LibraryController {
           currentVersion: payload.currentVersion,
         });
       }
-      return new SuccessRes(true);
+      return true;
     } catch (error) {
-      return new ErrorRes({
-        errno: ERRNO_ENUM.LIB_UPDATE_FAILED,
-        message: '更新失败',
-      });
+      throw new RpcBusinessException(ERRNO_ENUM.LIB_UPDATE_FAILED, '更新失败');
     }
   }
 }

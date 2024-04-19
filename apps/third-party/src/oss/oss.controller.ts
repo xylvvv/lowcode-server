@@ -6,10 +6,10 @@ import { v4 as uuid } from 'uuid';
 import * as dayjs from 'dayjs';
 import * as glob from 'glob';
 import axios from 'axios';
-import { ErrorRes, SuccessRes } from '@lib/common/dto/res.dto';
 import { ERRNO_ENUM } from '@lib/common/enums/errno.enum';
 import { GrpcMethod } from '@nestjs/microservices';
 import { MicroServiceType } from '@lib/common/types/micro-service.type';
+import { RpcBusinessException } from '@lib/common/exceptions/business.exception';
 
 @Controller()
 export class OssController {
@@ -37,13 +37,10 @@ export class OssController {
       const name =
         filename || `${dayjs().format('YYYY-MM-DD')}/${uuid().slice(0, 6)}`;
       const { url } = await this.client.put(name, file);
-      return new SuccessRes(url);
+      return url;
     } catch (error) {
       this.logger.error(error);
-      return new ErrorRes({
-        errno: ERRNO_ENUM.FILE_UPLOAD_FAILED,
-        message: '上传失败',
-      });
+      throw new RpcBusinessException(ERRNO_ENUM.FILE_UPLOAD_FAILED, '上传失败');
     }
   }
 
@@ -59,12 +56,9 @@ export class OssController {
           return this.client.put(join(target, file), resolve(path, file));
         });
       await Promise.all(tasks);
-      return new SuccessRes(`${this.baseURL}/${target.replace('\\', '/')}`);
+      return `${this.baseURL}/${target.replace('\\', '/')}`;
     } catch (error) {
-      return new ErrorRes({
-        errno: ERRNO_ENUM.FILE_UPLOAD_FAILED,
-        message: '上传失败',
-      });
+      throw new RpcBusinessException(ERRNO_ENUM.FILE_UPLOAD_FAILED, '上传失败');
     }
   }
 
@@ -72,12 +66,9 @@ export class OssController {
   async read({ file }: { file: string }) {
     try {
       const res = await this.request.get(file);
-      return new SuccessRes(res.data);
+      return res.data;
     } catch (error) {
-      return new ErrorRes({
-        errno: ERRNO_ENUM.FILE_READ_FAILED,
-        message: '读取失败',
-      });
+      throw new RpcBusinessException(ERRNO_ENUM.FILE_READ_FAILED, '读取失败');
     }
   }
 }

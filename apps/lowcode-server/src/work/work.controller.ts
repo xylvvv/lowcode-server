@@ -14,7 +14,7 @@ import { CreateWorkDto, FindWorksDto, PublishWorkDto } from '../dto/work.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { WorkService } from './work.service';
 import { isEmpty } from 'lodash';
-import { ErrorRes, SuccessRes } from '@lib/common/dto/res.dto';
+import { BusinessException } from '@lib/common/exceptions/business.exception';
 import { ERRNO_ENUM } from '@lib/common/enums/errno.enum';
 import { UserService } from '../user/user.service';
 
@@ -26,13 +26,12 @@ export class WorkController {
     private userService: UserService,
   ) {}
   @Post()
-  async createWork(@Body() createWorkDto: CreateWorkDto, @Request() req) {
+  createWork(@Body() createWorkDto: CreateWorkDto, @Request() req) {
     const { username } = req.user;
-    const res = await this.workService.createWork({
+    return this.workService.createWork({
       author: username,
       ...createWorkDto,
     });
-    return res;
   }
 
   @Get()
@@ -53,71 +52,51 @@ export class WorkController {
   }
 
   @Get(':id')
-  async findOne(@Request() req, @Param('id') id) {
+  findOne(@Request() req, @Param('id') id) {
     const { username } = req.user;
-    const res = await this.workService.findOne(id, username);
-    return res;
+    return this.workService.findOne(id, username);
   }
 
   @Patch(':id')
-  async updateWork(@Request() req, @Param('id') id, @Body() data: any) {
+  updateWork(@Request() req, @Param('id') id, @Body() data: any) {
     const { username } = req.user;
-    if (isEmpty(data)) return new SuccessRes('更新成功');
-    const res = await this.workService.update(id, username, data);
-    return res;
+    if (isEmpty(data)) return '更新成功';
+    return this.workService.update(id, username, data);
   }
 
   @Post('copy/:id')
   async copyWork(@Request() req, @Param('id') id) {
     const { username } = req.user;
-    const res = await this.workService.findOne(id);
-    if (res.errno) return res;
-    const { data: work } = res;
+    const work = await this.workService.findOne(id);
     const { content, title, subtitle, coverImg, status, copiedCount } = work;
     if (status === 3) {
-      return new ErrorRes({
-        errno: ERRNO_ENUM.WORK_FORCE_OFFLINE,
-        message: '作品已下线',
-      });
+      throw new BusinessException(ERRNO_ENUM.WORK_FORCE_OFFLINE, '作品已下线');
     }
-    const res2 = await this.workService.createWork({
+    await this.workService.createWork({
       content,
       title: `${title}-复制`,
       subtitle,
       coverImg,
       author: username,
     });
-    if (res2.errno) return res2;
     await this.workService.update(id, work.author, {
       copiedCount: copiedCount + 1,
     });
-    return new SuccessRes('复制成功');
+    return '复制成功';
   }
 
   @Delete(':id')
   async deleteWork(@Request() req, @Param('id') id) {
     const { username } = req.user;
-    const res = await this.workService.update(id, username, { status: 0 });
-    if (res.errno) {
-      return new ErrorRes({
-        message: '删除失败',
-        errno: ERRNO_ENUM.WORK_DELETE_FAILED,
-      });
-    }
-    return new SuccessRes('删除成功');
+    await this.workService.update(id, username, { status: 0 });
+    return '删除成功';
   }
 
   @Post('undelete/:id')
   async undelete(@Request() req, @Param('id') id) {
     const { username } = req.user;
-    const res = await this.workService.update(id, username, { status: 1 });
-    if (res.errno) {
-      return new ErrorRes({
-        message: '恢复删除失败',
-        errno: ERRNO_ENUM.WORK_DELETE_BACK_FAILED,
-      });
-    }
-    return new SuccessRes('恢复删除成功');
+    await this.workService.update(id, username, { status: 1 });
+    return '恢复删除成功';
   }
 
   @Post('transfer/:id/:receiver')
@@ -125,28 +104,20 @@ export class WorkController {
     const { id, receiver } = params;
     const { username } = req.user;
     if (username === receiver) {
-      return new ErrorRes({
-        message: '作者和接收人相同',
-        errno: ERRNO_ENUM.AUTHOR_RECEIVER_SAME,
-      });
+      throw new BusinessException(
+        ERRNO_ENUM.AUTHOR_RECEIVER_SAME,
+        '作者和接收人相同',
+      );
     }
-    const user = await this.userService.findOne(receiver);
-    if (!user) {
-      return new ErrorRes({
-        message: '接收人不存在',
-        errno: ERRNO_ENUM.USER_FIND_FAILED,
+    try {
+      await this.userService.findOne(receiver);
+      await this.workService.update(id, username, {
+        receiver,
       });
+    } catch (error) {
+      throw new BusinessException(ERRNO_ENUM.WORK_TRANSFER_FAILED, '转赠失败');
     }
-    const res = await this.workService.update(id, username, {
-      receiver,
-    });
-    if (res.errno) {
-      return new ErrorRes({
-        message: '转赠失败',
-        errno: ERRNO_ENUM.WORK_TRANSFER_FAILED,
-      });
-    }
-    return new SuccessRes('转赠成功');
+    return '转赠成功';
   }
 
   @Post('publish/:id')

@@ -14,7 +14,11 @@ export type MicroServiceType<T extends abstract new (...args: any) => any> =
         [key in keyof R]: (
           ...p: R[key] extends (...args: any) => any ? Parameters<R[key]> : any
         ) => R[key] extends (...args) => any
-          ? Observable<Awaited<ReturnType<R[key]>>>
+          ? Observable<{
+              errno: number;
+              data: Awaited<ReturnType<R[key]>>;
+              message?: string;
+            }>
           : any;
       }
     : any;

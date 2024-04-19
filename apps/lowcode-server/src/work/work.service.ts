@@ -1,8 +1,10 @@
-import { IPageInfo } from '@lib/common/types/page-info.type';
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { IWorkMicroService } from 'apps/work/src/work.controller';
 import { firstValueFrom } from 'rxjs';
+
+import { IWorkMicroService } from 'apps/work/src/work.controller';
+import { IPageInfo } from '@lib/common/types/page-info.type';
+import { BusinessException } from '@lib/common/exceptions/business.exception';
 
 @Injectable()
 export class WorkService implements OnModuleInit {
@@ -17,22 +19,29 @@ export class WorkService implements OnModuleInit {
     this.workService = this.client.getService<IWorkMicroService>('WorkService');
   }
 
-  createWork(data: any) {
+  async createWork(data: any) {
     const { content, ...rest } = data;
-    return firstValueFrom(
+    const res = await firstValueFrom(
       this.workService.createWork({
         ...rest,
         content: content ? JSON.stringify(content) : null,
       }),
     );
+    if (res.errno) {
+      throw new BusinessException(res.errno, res.message);
+    }
+    return res.data;
   }
 
   async findOne(id: number, author?: string) {
     const res = await firstValueFrom(this.workService.findOne({ id, author }));
-    if (!res.errno) {
-      res.data.content = res.data.content ? JSON.parse(res.data.content) : null;
+    if (res.errno) {
+      throw new BusinessException(res.errno, res.message);
     }
-    return res;
+    return {
+      ...res.data,
+      content: res.data.content ? JSON.parse(res.data.content) : null,
+    };
   }
 
   async update(id: number, author: string, data: any) {
@@ -45,21 +54,36 @@ export class WorkService implements OnModuleInit {
         content: content ? JSON.stringify(content) : null,
       }),
     );
-    if (!res.errno) {
-      res.data.content = res.data.content ? JSON.parse(res.data.content) : null;
+    if (res.errno) {
+      throw new BusinessException(res.errno, res.message);
     }
-    return res;
+    return {
+      ...res.data,
+      content: res.data.content ? JSON.parse(res.data.content) : null,
+    };
   }
 
-  findWorks(author: string, data: any, pageInfo: IPageInfo) {
-    return this.workService.findWorks({
-      ...data,
-      author,
-      ...pageInfo,
-    });
+  async findWorks(author: string, data: any, pageInfo: IPageInfo) {
+    const res = await firstValueFrom(
+      this.workService.findWorks({
+        ...data,
+        author,
+        ...pageInfo,
+      }),
+    );
+    if (res.errno) {
+      throw new BusinessException(res.errno, res.message);
+    }
+    return res.data;
   }
 
-  publishWork(id: number, author: string, isTemplate: boolean) {
-    return this.workService.publishWork({ id, author, isTemplate });
+  async publishWork(id: number, author: string, isTemplate: boolean) {
+    const res = await firstValueFrom(
+      this.workService.publishWork({ id, author, isTemplate }),
+    );
+    if (res.errno) {
+      throw new BusinessException(res.errno, res.message);
+    }
+    return res.data;
   }
 }
