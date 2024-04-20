@@ -1,24 +1,33 @@
 import { Module } from '@nestjs/common';
-import { ThirdPartyController } from './third-party.controller';
-import { ThirdPartyService } from './third-party.service';
+import { OssController } from './oss.controller';
+import { OssService } from './oss.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
     ClientsModule.register([
       {
-        name: 'THIRD_PARTY_PACKAGE',
+        name: 'OSS_PACKAGE',
         transport: Transport.GRPC,
         options: {
-          package: 'third_party',
-          protoPath: 'apps/third-party/src/proto/third-party.proto',
+          package: 'oss',
+          protoPath: 'apps/third-party/src/proto/oss.proto',
+          url: 'localhost:5005',
+        },
+      },
+      {
+        name: 'JENKINS_PACKAGE',
+        transport: Transport.GRPC,
+        options: {
+          package: 'jenkins',
+          protoPath: 'apps/third-party/src/proto/jenkins.proto',
           url: 'localhost:5005',
         },
       },
     ]),
   ],
-  controllers: [ThirdPartyController],
-  providers: [ThirdPartyService],
-  exports: [ThirdPartyService],
+  controllers: [OssController],
+  providers: [OssService],
+  exports: [OssService],
 })
 export class ThirdPartyModule {}

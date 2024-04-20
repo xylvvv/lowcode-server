@@ -1,13 +1,14 @@
 import { resolve, join } from 'path';
 import { Controller, Logger } from '@nestjs/common';
+import { GrpcMethod } from '@nestjs/microservices';
 import { ConfigService } from '@nestjs/config';
 import * as OSS from 'ali-oss';
 import { v4 as uuid } from 'uuid';
 import * as dayjs from 'dayjs';
 import * as glob from 'glob';
 import axios from 'axios';
+
 import { ERRNO_ENUM } from '@lib/common/enums/errno.enum';
-import { GrpcMethod } from '@nestjs/microservices';
 import { MicroServiceType } from '@lib/common/types/micro-service.type';
 import { RpcBusinessException } from '@lib/common/exceptions/business.exception';
 
@@ -31,7 +32,7 @@ export class OssController {
     baseURL: this.baseURL,
   });
 
-  @GrpcMethod('ThirdPartyService', 'Upload')
+  @GrpcMethod('OssService', 'Upload')
   async upload({ file, filename }: { file: Buffer; filename?: string }) {
     try {
       const name =
@@ -44,7 +45,7 @@ export class OssController {
     }
   }
 
-  @GrpcMethod('ThirdPartyService', 'Publish')
+  @GrpcMethod('OssService', 'Publish')
   async publish({ path, target }: { path: string; target: string }) {
     try {
       const tasks = glob
@@ -62,7 +63,7 @@ export class OssController {
     }
   }
 
-  @GrpcMethod('ThirdPartyService', 'Read')
+  @GrpcMethod('OssService', 'Read')
   async read({ file }: { file: string }) {
     try {
       const res = await this.request.get(file);
@@ -73,4 +74,4 @@ export class OssController {
   }
 }
 
-export type IThirdPartyMicroService = MicroServiceType<typeof OssController>;
+export type IOssMicroService = MicroServiceType<typeof OssController>;

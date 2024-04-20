@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package jenkins;
+
+service JenkinsService {
+  rpc EnsureJob(EnsureJobDto) returns (CommonRes) {}
+}
+
+message EnsureJobDto {
+  required string job = 1;
+  required string repositoryUrl = 2;
+}
+
+message CommonRes {
+  int32 errno = 1;
+  optional bool data = 2;
+  optional string message = 3;
+}

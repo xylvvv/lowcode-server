@@ -1,0 +1,65 @@
+
+<flow-definition plugin="workflow-job@1400.v7fd111b_ec82f">
+  <actions>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobAction plugin="pipeline-model-definition@2.2184.v0b_358b_953e69"/>
+    <org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction plugin="pipeline-model-definition@2.2184.v0b_358b_953e69">
+      <jobProperties/>
+      <triggers/>
+      <parameters/>
+      <options/>
+    </org.jenkinsci.plugins.pipeline.modeldefinition.actions.DeclarativeJobPropertyTrackerAction>
+  </actions>
+  <description/>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.model.ParametersDefinitionProperty>
+      <parameterDefinitions>
+        <hudson.model.TextParameterDefinition>
+          <name>BRANCH</name>
+          <description>Git分支</description>
+          <defaultValue>master</defaultValue>
+          <trim>false</trim>
+        </hudson.model.TextParameterDefinition>
+      </parameterDefinitions>
+    </hudson.model.ParametersDefinitionProperty>
+  </properties>
+  <definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@3894.vd0f0248b_a_fc4">
+    <script>
+      pipeline {
+        agent any
+        environment{
+          OSS_ACCESS_KEY_ID = 'LTAI4FqTcF6hh1mPa4pZzADC'
+          OSS_ENDPOINT = 'oss-cn-hongkong.aliyuncs.com'
+          OSS_BUCKET = 'comps'
+        }
+        stages {
+          stage('Git Pull') {
+            steps {
+              checkout scmGit(branches: [[name: '$BRANCH']], extensions: [], userRemoteConfigs: [[url: '<%= repositoryUrl %>']])
+            }
+          }
+          stage('Build') {
+            steps {
+              withCredentials([string(credentialsId: '2985f680-57df-4702-818a-48f5406133fd', variable: 'OSS_ACCESS_KEY_SECRET')]) {
+                sh '''docker build -t $JOB_NAME . \\
+                --build-arg OSS_ACCESS_KEY_ID=$OSS_ACCESS_KEY_ID \\
+                --build-arg OSS_ACCESS_KEY_SECRET=$OSS_ACCESS_KEY_SECRET \\
+                --build-arg OSS_ENDPOINT=$OSS_ENDPOINT \\
+                --build-arg OSS_BUCKET=$OSS_BUCKET \\
+                --build-arg OBJECT_NAME=$JOB_NAME/$(echo $BRANCH | sed \'s/^.*\\///g\')'''
+              }
+            }
+          }
+          stage('Clean') {
+            steps {
+              cleanWs()
+            }
+          }
+        }
+      }
+    </script>
+    <sandbox>true</sandbox>
+  </definition>
+  <triggers/>
+  <disabled>false</disabled>
+</flow-definition>

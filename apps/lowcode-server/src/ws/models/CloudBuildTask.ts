@@ -6,7 +6,7 @@ import { Socket } from 'socket.io';
 import * as fse from 'fs-extra';
 import Git, { SimpleGit } from 'simple-git';
 import { Logger } from '@nestjs/common';
-import { ThirdPartyService } from '../../third-party/third-party.service';
+import { OssService } from '../../third-party/oss.service';
 
 const OSS_REMOTE_FILE = '.git_remote';
 
@@ -22,10 +22,10 @@ class CloudBuildTask {
   client: Socket;
   logger: Logger;
   _git: SimpleGit;
-  thirdPartyService: ThirdPartyService;
+  ossService: OssService;
   _firstPublish = false;
 
-  constructor(options, { client, logger, thirdPartyService }) {
+  constructor(options, { client, logger, ossService }) {
     this._repo = options.repo; // 仓库地址
     this._name = options.name; // 项目名称
     this._version = options.version; // 版本号
@@ -41,7 +41,7 @@ class CloudBuildTask {
     this._buildDir = join(this._sourceCodeDir, options.buildDir || 'dist'); // 构建产物目录
     this.client = client;
     this.logger = logger;
-    this.thirdPartyService = thirdPartyService;
+    this.ossService = ossService;
   }
 
   async run() {
@@ -57,7 +57,7 @@ class CloudBuildTask {
   async prepare() {
     try {
       this.client.emit('building', '开始执行构建前检查');
-      const res = await this.thirdPartyService.read(
+      const res = await this.ossService.read(
         `/${this._name}/${OSS_REMOTE_FILE}`,
       );
       if (res.errno) {
@@ -152,7 +152,7 @@ class CloudBuildTask {
   async publish() {
     try {
       this.client.emit('building', '开始进行发布');
-      const res = await this.thirdPartyService.publish(
+      const res = await this.ossService.publish(
         this._buildDir,
         `${this._name}/${this._version}`,
       );
@@ -160,7 +160,7 @@ class CloudBuildTask {
         throw new Error('构建产物发布失败');
       }
       if (this._firstPublish) {
-        const res2 = await this.thirdPartyService.upload(
+        const res2 = await this.ossService.upload(
           Buffer.from(this._repo),
           `${this._name}/${OSS_REMOTE_FILE}`,
         );

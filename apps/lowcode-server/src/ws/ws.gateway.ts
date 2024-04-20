@@ -10,7 +10,7 @@ import {
 import { Socket } from 'socket.io';
 import { WsGuard } from '../auth/ws-auth.guard';
 import CloudBuildTask from './models/CloudBuildTask';
-import { ThirdPartyService } from '../third-party/third-party.service';
+import { OssService } from '../third-party/oss.service';
 
 const REDIS_PREFIX = 'cloudbuild';
 
@@ -19,8 +19,8 @@ const REDIS_PREFIX = 'cloudbuild';
 export class WsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private logger = new Logger(WsGateway.name);
 
-  @Inject(ThirdPartyService)
-  private thirdPartyService: ThirdPartyService;
+  @Inject(OssService)
+  private ossService: OssService;
 
   @SubscribeMessage('build')
   async build(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
@@ -28,7 +28,7 @@ export class WsGateway implements OnGatewayConnection, OnGatewayDisconnect {
       const task = new CloudBuildTask(client.handshake.query, {
         client,
         logger: this.logger,
-        thirdPartyService: this.thirdPartyService,
+        ossService: this.ossService,
       });
       await task.run();
       client.emit('complete');

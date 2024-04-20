@@ -11,8 +11,11 @@ async function bootstrap() {
     {
       transport: Transport.GRPC,
       options: {
-        package: 'third_party',
-        protoPath: join(__dirname, 'proto/third-party.proto'),
+        package: ['oss', 'jenkins'],
+        protoPath: [
+          join(__dirname, 'proto/oss.proto'),
+          join(__dirname, 'proto/jenkins.proto'),
+        ],
         url: 'localhost:5005',
       },
     },

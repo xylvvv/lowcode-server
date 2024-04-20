@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package third_party;
+package oss;
 
-service ThirdPartyService {
+service OssService {
   rpc Upload(UploadDto) returns (CommonRes) {}
   rpc Publish(PublishDto) returns (CommonRes) {}
   rpc Read(ReadDto) returns (CommonRes) {}
