@@ -4,11 +4,17 @@ package jenkins;
 
 service JenkinsService {
   rpc EnsureJob(EnsureJobDto) returns (CommonRes) {}
+  rpc Build(BuildDto) returns (CommonRes) {}
 }
 
 message EnsureJobDto {
   required string job = 1;
   required string repositoryUrl = 2;
+}
+
+message BuildDto {
+  required string job = 1;
+  required string params = 2;
 }
 
 message CommonRes {

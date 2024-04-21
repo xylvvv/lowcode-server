@@ -9,30 +9,31 @@ import {
 } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
 import { WsGuard } from '../auth/ws-auth.guard';
+import { TaskService } from '../task/task.service';
 import CloudBuildTask from './models/CloudBuildTask';
-import { OssService } from '../third-party/oss.service';
-
-const REDIS_PREFIX = 'cloudbuild';
 
 @WebSocketGateway(80, { namespace: 'cloudbuild' })
 @UseGuards(WsGuard)
 export class WsGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private logger = new Logger(WsGateway.name);
 
-  @Inject(OssService)
-  private ossService: OssService;
+  @Inject(TaskService)
+  private taskService: TaskService;
 
   @SubscribeMessage('build')
   async build(@MessageBody() data: string, @ConnectedSocket() client: Socket) {
     try {
       const task = new CloudBuildTask(client.handshake.query, {
-        client,
-        logger: this.logger,
-        ossService: this.ossService,
+        logger: (msg: string) => {
+          client.emit('building', msg);
+          this.logger.log(msg);
+        },
+        taskService: this.taskService,
       });
       await task.run();
       client.emit('complete');
     } catch (error) {
+      this.logger.error(error);
       client.emit('error', error?.message || error);
     }
   }

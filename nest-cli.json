@@ -8,7 +8,8 @@
     "tsConfigPath": "apps/lowcode-server/tsconfig.app.json",
     "assets": [
       "**/*.proto",
-      "**/*.env"
+      "**/*.env",
+      "**/*.xml"
     ],
     "watchAssets": true
   },
@@ -79,6 +80,15 @@
       "sourceRoot": "apps/library/src",
       "compilerOptions": {
         "tsConfigPath": "apps/library/tsconfig.app.json"
+      }
+    },
+    "task": {
+      "type": "application",
+      "root": "apps/task",
+      "entryFile": "main",
+      "sourceRoot": "apps/task/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/task/tsconfig.app.json"
       }
     }
   }

@@ -5,6 +5,7 @@ import { WorkModule } from './work/work.module';
 import { LibraryModule } from './library/library.module';
 import { ThirdPartyModule } from './third-party/third-party.module';
 import { WsModule } from './ws/ws.module';
+import { TaskModule } from './task/task.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { WsModule } from './ws/ws.module';
     LibraryModule,
     ThirdPartyModule,
     WsModule,
+    TaskModule,
   ],
   controllers: [],
   providers: [],

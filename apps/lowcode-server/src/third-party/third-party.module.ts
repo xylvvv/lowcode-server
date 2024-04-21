@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 import { OssController } from './oss.controller';
 import { OssService } from './oss.service';
-import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
@@ -12,15 +12,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
         options: {
           package: 'oss',
           protoPath: 'apps/third-party/src/proto/oss.proto',
-          url: 'localhost:5005',
-        },
-      },
-      {
-        name: 'JENKINS_PACKAGE',
-        transport: Transport.GRPC,
-        options: {
-          package: 'jenkins',
-          protoPath: 'apps/third-party/src/proto/jenkins.proto',
           url: 'localhost:5005',
         },
       },

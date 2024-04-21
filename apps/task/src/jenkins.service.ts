@@ -18,8 +18,28 @@ export class JenkinsService implements OnModuleInit {
   }
 
   async ensureJob(job: string, repositoryUrl: string) {
-    return await firstValueFrom(
+    const res = await firstValueFrom(
       this.jenkinsService.ensureJob({ job, repositoryUrl }),
     );
+    if (res.errno) {
+      throw new Error(res.message);
+    }
+    return res.data;
+  }
+
+  async build(job: string, data: Record<string, any>) {
+    let params;
+    try {
+      params = JSON.stringify(data);
+    } catch (error) {
+      throw new Error('params序列化失败');
+    }
+    const res = await firstValueFrom(
+      this.jenkinsService.build({ job, params }),
+    );
+    if (res.errno) {
+      throw new Error(res.message);
+    }
+    return res.data;
   }
 }
