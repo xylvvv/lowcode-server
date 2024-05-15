@@ -1,17 +1,11 @@
-import {
-  Controller,
-  Post,
-  Body,
-  Get,
-  UseGuards,
-  Request,
-} from '@nestjs/common';
+import { Controller, Post, Body, Get, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { User } from 'apps/user/src/user.entity';
+import { User as UserEntity } from 'apps/user-server/src/user/user.entity';
 import { AuthService } from '../auth/auth.service';
 import { LoginReqDto } from '../dto/user.dto';
 import { UserService } from './user.service';
+import { User } from '../decorators/user.decorator';
 
 @Controller('user')
 export class UserController {
@@ -27,7 +21,7 @@ export class UserController {
     try {
       user = await this.userService.findOne(username, password);
     } catch (error) {
-      user = await this.userService.createUser(loginReqDto as User);
+      user = await this.userService.createUser(loginReqDto as UserEntity);
     }
     const payload = { username: user.username, sub: user.id };
     return {
@@ -37,7 +31,7 @@ export class UserController {
 
   @Get()
   @UseGuards(AuthGuard('jwt'))
-  find(@Request() req) {
-    return req.user;
+  find(@User() user: UserEntity) {
+    return user;
   }
 }

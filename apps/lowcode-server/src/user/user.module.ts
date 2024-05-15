@@ -12,7 +12,7 @@ import { UserService } from './user.service';
         transport: Transport.GRPC,
         options: {
           package: 'user',
-          protoPath: 'apps/user/src/proto/user.proto',
+          protoPath: 'apps/user-server/src/proto/user.proto',
           url: 'localhost:5001',
         },
       },

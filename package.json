@@ -106,7 +106,6 @@
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
-      "^@lib/proto(|/.*)$": "<rootDir>/libs/proto/src/$1",
       "^@lib/common(|/.*)$": "<rootDir>/libs/common/src/$1"
     }
   }

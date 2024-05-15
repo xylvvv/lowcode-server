@@ -5,7 +5,7 @@ import { GrpcMethod } from '@nestjs/microservices';
 import * as bcrypt from 'bcrypt';
 import { ERRNO_ENUM } from '@lib/common/enums/errno.enum';
 import { MicroServiceType } from '@lib/common/types/micro-service.type';
-import { RpcBusinessException } from '@lib/common/exceptions/business.exception';
+import { BusinessException } from '@lib/common/exceptions/business.exception';
 
 @Controller()
 export class UserController {
@@ -23,20 +23,17 @@ export class UserController {
       const user = await this.userService.findOne(username);
       if (user) {
         if (password && !bcrypt.compareSync(password, user.password)) {
-          throw new RpcBusinessException(
+          throw new BusinessException(
             ERRNO_ENUM.PASSWORD_ERROR,
             '用户名密码不匹配',
           );
         }
         return user;
       } else {
-        throw new RpcBusinessException(ERRNO_ENUM.USER_NOT_EXIST, '用户不存在');
+        throw new BusinessException(ERRNO_ENUM.USER_NOT_EXIST, '用户不存在');
       }
     } catch (error) {
-      throw new RpcBusinessException(
-        ERRNO_ENUM.USER_FIND_FAILED,
-        '用户查询失败',
-      );
+      throw new BusinessException(ERRNO_ENUM.USER_FIND_FAILED, '用户查询失败');
     }
   }
 
@@ -58,7 +55,7 @@ export class UserController {
       const res = await this.userService.createUser(user);
       return res;
     } catch (error) {
-      throw new RpcBusinessException(
+      throw new BusinessException(
         ERRNO_ENUM.USER_CREATE_FAILED,
         '用户创建失败',
       );

@@ -4,7 +4,7 @@ import { from, map, scan, lastValueFrom } from 'rxjs';
 
 import { MicroServiceType } from '@lib/common/types/micro-service.type';
 import { ERRNO_ENUM } from '@lib/common/enums/errno.enum';
-import { RpcBusinessException } from '@lib/common/exceptions/business.exception';
+import { BusinessException } from '@lib/common/exceptions/business.exception';
 
 import { LibraryService } from './library.service';
 import { CreateLibraryDto } from './dto/create-library.dto';
@@ -49,7 +49,7 @@ export class LibraryController {
       );
       return data;
     } catch (error) {
-      throw new RpcBusinessException(
+      throw new BusinessException(
         ERRNO_ENUM.LIB_FIND_FAILED,
         '列表获取失败',
       );
@@ -78,14 +78,14 @@ export class LibraryController {
         });
         return true;
       } else if (lib.author !== author) {
-        throw new RpcBusinessException(ERRNO_ENUM.LIB_EXISTED, '组件库已存在');
+        throw new BusinessException(ERRNO_ENUM.LIB_EXISTED, '组件库已存在');
       }
       const versions = await this.libraryService.getVersions({
         library: name,
         version,
       });
       if (versions.length) {
-        throw new RpcBusinessException(
+        throw new BusinessException(
           ERRNO_ENUM.LIB_VERSION_EXISTED,
           '当前版本已存在',
         );
@@ -96,7 +96,7 @@ export class LibraryController {
       });
       return true;
     } catch (error) {
-      throw new RpcBusinessException(
+      throw new BusinessException(
         ERRNO_ENUM.LIB_CREATE_FAILED,
         '组件库创建失败',
       );
@@ -108,7 +108,7 @@ export class LibraryController {
     try {
       const lib = await this.libraryService.findOne({ id });
       if (!lib) {
-        throw new RpcBusinessException(
+        throw new BusinessException(
           ERRNO_ENUM.LIB_FIND_FAILED,
           '组件库不存在',
         );
@@ -116,7 +116,7 @@ export class LibraryController {
       const { name } = lib;
       return await this.libraryService.getVersions({ library: name });
     } catch (error) {
-      throw new RpcBusinessException(
+      throw new BusinessException(
         ERRNO_ENUM.LIB_VERSIONS_FIND_FAILED,
         '版本获取失败',
       );
@@ -129,7 +129,7 @@ export class LibraryController {
       const { id, author, title, currentVersion } = dto;
       const lib = await this.libraryService.findOne({ id });
       if (!lib || (lib.author !== author && !lib.isPublic)) {
-        throw new RpcBusinessException(
+        throw new BusinessException(
           ERRNO_ENUM.LIB_FIND_FAILED,
           '组件库不存在',
         );
@@ -160,7 +160,7 @@ export class LibraryController {
       }
       return true;
     } catch (error) {
-      throw new RpcBusinessException(ERRNO_ENUM.LIB_UPDATE_FAILED, '更新失败');
+      throw new BusinessException(ERRNO_ENUM.LIB_UPDATE_FAILED, '更新失败');
     }
   }
 }

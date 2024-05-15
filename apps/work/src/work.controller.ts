@@ -8,7 +8,7 @@ import { WorkContent } from './work-content.schema';
 import { Work } from './work.entity';
 import { IPageInfo } from '@lib/common/types/page-info.type';
 import { WORK_STATUS_ENUM } from '@lib/common/enums/work-status.enum';
-import { RpcBusinessException } from '@lib/common/exceptions/business.exception';
+import { BusinessException } from '@lib/common/exceptions/business.exception';
 
 @Controller()
 export class WorkController {
@@ -24,7 +24,7 @@ export class WorkController {
       );
       return res;
     } catch (e) {
-      throw new RpcBusinessException(
+      throw new BusinessException(
         ERRNO_ENUM.WORK_CREATE_FAILED,
         '作品创建失败',
       );
@@ -44,13 +44,10 @@ export class WorkController {
           content: res.content ? JSON.stringify(res.content) : '',
         };
       } else {
-        throw new RpcBusinessException(ERRNO_ENUM.WORK_NOT_EXIST, '作品不存在');
+        throw new BusinessException(ERRNO_ENUM.WORK_NOT_EXIST, '作品不存在');
       }
     } catch (error) {
-      throw new RpcBusinessException(
-        ERRNO_ENUM.WORK_FIND_FAILED,
-        '作品查询失败',
-      );
+      throw new BusinessException(ERRNO_ENUM.WORK_FIND_FAILED, '作品查询失败');
     }
   }
 
@@ -62,7 +59,7 @@ export class WorkController {
       const { id, author, content, receiver, ...rest } = updateWorkDto;
       const work = await this.workService.findOne(id, author);
       if (!work) {
-        throw new RpcBusinessException(ERRNO_ENUM.WORK_NOT_EXIST, '作品不存在');
+        throw new BusinessException(ERRNO_ENUM.WORK_NOT_EXIST, '作品不存在');
       }
       await this.workService.updateWork(
         {
@@ -79,7 +76,7 @@ export class WorkController {
         content,
       };
     } catch (error) {
-      throw new RpcBusinessException(
+      throw new BusinessException(
         ERRNO_ENUM.WORK_UPDATE_FAILED,
         '作品更新失败',
       );
@@ -96,10 +93,7 @@ export class WorkController {
       });
       return res;
     } catch (error) {
-      throw new RpcBusinessException(
-        ERRNO_ENUM.WORK_FIND_FAILED,
-        '作品查询失败',
-      );
+      throw new BusinessException(ERRNO_ENUM.WORK_FIND_FAILED, '作品查询失败');
     }
   }
 
@@ -110,16 +104,13 @@ export class WorkController {
       content: WorkContent;
     };
     if (!work) {
-      throw new RpcBusinessException(
+      throw new BusinessException(
         ERRNO_ENUM.WORK_AUTHOR_MISMATCHING,
         '非本人作品',
       );
     }
     if (work.status === WORK_STATUS_ENUM.OFFLINE) {
-      throw new RpcBusinessException(
-        ERRNO_ENUM.WORK_FORCE_OFFLINE,
-        '作品已下线',
-      );
+      throw new BusinessException(ERRNO_ENUM.WORK_FORCE_OFFLINE, '作品已下线');
     }
     try {
       const publishContentId =
@@ -139,7 +130,7 @@ export class WorkController {
       }
       return true;
     } catch (error) {
-      throw new RpcBusinessException(
+      throw new BusinessException(
         ERRNO_ENUM.WORK_PUBLISH_FAILED,
         '作品发布失败',
       );

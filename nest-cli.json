@@ -19,13 +19,13 @@
     "spec": false
   },
   "projects": {
-    "user": {
+    "user-server": {
       "type": "application",
-      "root": "apps/user",
+      "root": "apps/user-server",
       "entryFile": "main",
-      "sourceRoot": "apps/user/src",
+      "sourceRoot": "apps/user-server/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/user/tsconfig.app.json"
+        "tsConfigPath": "apps/user-server/tsconfig.app.json"
       }
     },
     "lowcode-server": {

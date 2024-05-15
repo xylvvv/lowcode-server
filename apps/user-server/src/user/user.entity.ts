@@ -2,10 +2,12 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinTable,
+  ManyToMany,
   PrimaryGeneratedColumn,
-  Unique,
   UpdateDateColumn,
 } from 'typeorm';
+import { Role } from '../role/role.entity';
 
 enum Gender {
   MAN = 1,
@@ -53,4 +55,8 @@ export class User {
 
   @UpdateDateColumn({ name: 'update_at', nullable: true })
   updateAt: Date;
+
+  @ManyToMany(() => Role)
+  @JoinTable({ name: 'user_role' })
+  roles: Role[];
 }

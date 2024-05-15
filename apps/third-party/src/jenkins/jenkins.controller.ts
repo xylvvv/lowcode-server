@@ -6,7 +6,7 @@ import { ConfigService } from '@nestjs/config';
 import * as Jenkins from 'jenkins';
 import * as ejs from 'ejs';
 
-import { RpcBusinessException } from '@lib/common/exceptions/business.exception';
+import { BusinessException } from '@lib/common/exceptions/business.exception';
 import { ERRNO_ENUM } from '@lib/common/enums/errno.enum';
 import { MicroServiceType } from '@lib/common/types/micro-service.type';
 
@@ -50,7 +50,7 @@ export class JenkinsController {
       return true;
     } catch (error) {
       this.logger.error(error);
-      throw new RpcBusinessException(
+      throw new BusinessException(
         ERRNO_ENUM.JENKINS_REST_API_CALL_FAILED,
         'Jenkis RestAPI调用失败',
       );
@@ -63,7 +63,7 @@ export class JenkinsController {
     try {
       parameters = JSON.parse(params);
     } catch (error) {
-      throw new RpcBusinessException('params格式有误');
+      throw new BusinessException('params格式有误');
     }
     try {
       await this.jenkins.job.build({
@@ -73,7 +73,7 @@ export class JenkinsController {
       return true;
     } catch (error) {
       this.logger.error(error);
-      throw new RpcBusinessException(
+      throw new BusinessException(
         ERRNO_ENUM.JENKINS_REST_API_CALL_FAILED,
         'Jenkis RestAPI调用失败',
       );

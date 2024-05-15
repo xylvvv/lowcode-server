@@ -1,8 +1,7 @@
-import { WORK_STATUS_ENUM } from '@lib/common/enums/work-status.enum';
+import { Transform } from 'class-transformer';
 import {
   IsBoolean,
-  IsEnum,
-  IsNumber,
+  IsInt,
   IsObject,
   IsOptional,
   IsString,
@@ -29,16 +28,18 @@ export class FindWorksDto {
   status: string;
 
   @IsOptional()
-  isTemplate: string;
+  @Transform(({ obj }) => ['1', 'true'].includes(obj.isTemplate))
+  isTemplate: boolean;
+
+  @IsInt()
+  pageIndex: number = 1;
+
+  @IsInt()
+  pageSize: number = 10;
 
   @IsOptional()
-  pageIndex: string;
-
-  @IsOptional()
-  pageSize: string;
-
-  @IsOptional()
-  id: string;
+  @IsInt()
+  id: number;
 
   @IsOptional()
   uuid: string;

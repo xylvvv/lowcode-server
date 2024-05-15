@@ -1,13 +1,15 @@
-import { NestFactory } from '@nestjs/core';
 import { join } from 'path';
+import { NestFactory } from '@nestjs/core';
 import { Transport, MicroserviceOptions } from '@nestjs/microservices';
-import { UserModule } from './user.module';
+
+import { UserServerModule } from './user-server.module';
+import { AllExceptionsFilter } from '@lib/common/filters/all-exception.filter';
+import { BusinessExceptionFilter } from '@lib/common/filters/business.filter';
 import { TransformInterceptor } from '@lib/common/interceptors/transform.interceptor';
-import { RpcBusinessExceptionFilter } from '@lib/common/filters/rpc-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    UserModule,
+    UserServerModule,
     {
       transport: Transport.GRPC,
       options: {
@@ -18,7 +20,10 @@ async function bootstrap() {
     },
   );
   app.useGlobalInterceptors(new TransformInterceptor());
-  app.useGlobalFilters(new RpcBusinessExceptionFilter());
+  app.useGlobalFilters(
+    new AllExceptionsFilter(),
+    new BusinessExceptionFilter(),
+  );
   await app.listen();
 }
 bootstrap();

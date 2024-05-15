@@ -6,12 +6,13 @@ import {
   ParseIntPipe,
   Patch,
   Post,
-  Request,
   UseGuards,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+
 import { LibraryService } from './library.service';
 import { CreateLibraryDto, UpdateLibraryDto } from '../dto/library.dto';
+import { User } from '../decorators/user.decorator';
 
 @Controller('library')
 @UseGuards(AuthGuard('jwt'))
@@ -19,14 +20,12 @@ export class LibraryController {
   constructor(private libraryService: LibraryService) {}
 
   @Get()
-  find(@Request() req) {
-    const { username } = req.user;
+  find(@User('username') username: string) {
     return this.libraryService.findAll(username);
   }
 
   @Post()
-  create(@Body() dto: CreateLibraryDto, @Request() req) {
-    const { username } = req.user;
+  create(@Body() dto: CreateLibraryDto, @User('username') username: string) {
     return this.libraryService.create({
       ...dto,
       author: username,
@@ -41,10 +40,9 @@ export class LibraryController {
   @Patch(':id')
   updateLibrary(
     @Param('id', ParseIntPipe) id: number,
-    @Request() req,
     @Body() dto: UpdateLibraryDto,
+    @User('username') author: string,
   ) {
-    const { username: author } = req.user;
     return this.libraryService.update({
       id,
       author,

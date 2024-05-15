@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserController } from './user.controller';
-import { UserService } from './user.service';
+
 import DatabaseConfig from './config/database.config';
-import { User } from './user.entity';
+import { UserModule } from './user/user.module';
+import { RoleModule } from './role/role.module';
+import { PermissionModule } from './permission/permission.module';
 
 @Module({
   imports: [
@@ -22,9 +23,11 @@ import { User } from './user.entity';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User]),
+    UserModule,
+    RoleModule,
+    PermissionModule,
   ],
-  controllers: [UserController],
-  providers: [UserService],
+  controllers: [],
+  providers: [],
 })
-export class UserModule {}
+export class UserServerModule {}

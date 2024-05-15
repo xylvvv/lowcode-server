@@ -8,6 +8,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+// import { PartialType } from '@nestjs/mapped-types'
 
 export class CreateLibraryDto {
   @IsString()
@@ -56,3 +57,5 @@ export class UpdateLibraryDto {
   @IsOptional()
   currentVersion?: number;
 }
+
+// export class UpdateLibraryDto extends PartialType(CreateLibraryDto) {}

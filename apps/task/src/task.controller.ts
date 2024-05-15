@@ -4,7 +4,7 @@ import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 
 import { MicroServiceType } from '@lib/common/types/micro-service.type';
-import { RpcBusinessException } from '@lib/common/exceptions/business.exception';
+import { BusinessException } from '@lib/common/exceptions/business.exception';
 import { ERRNO_ENUM } from '@lib/common/enums/errno.enum';
 
 @Controller()
@@ -20,7 +20,7 @@ export class TaskController {
       return job.id;
     } catch (error) {
       this.logger.error(error);
-      throw new RpcBusinessException(
+      throw new BusinessException(
         ERRNO_ENUM.TASK_ADD_FAILED,
         '任务添加失败',
       );
@@ -35,7 +35,7 @@ export class TaskController {
       return state;
     } catch (error) {
       this.logger.error(error);
-      throw new RpcBusinessException(
+      throw new BusinessException(
         ERRNO_ENUM.TASK_FIND_FAILED,
         '任务查询失败',
       );

@@ -2,8 +2,8 @@ import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 
-import { IUserMicroService } from 'apps/user/src/user.controller';
-import { User } from 'apps/user/src/user.entity';
+import { IUserMicroService } from 'apps/user-server/src/user/user.controller';
+import { User } from 'apps/user-server/src/user/user.entity';
 import { BusinessException } from '@lib/common/exceptions/business.exception';
 
 @Injectable()

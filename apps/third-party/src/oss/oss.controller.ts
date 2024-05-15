@@ -10,7 +10,7 @@ import axios from 'axios';
 
 import { ERRNO_ENUM } from '@lib/common/enums/errno.enum';
 import { MicroServiceType } from '@lib/common/types/micro-service.type';
-import { RpcBusinessException } from '@lib/common/exceptions/business.exception';
+import { BusinessException } from '@lib/common/exceptions/business.exception';
 
 @Controller()
 export class OssController {
@@ -41,7 +41,7 @@ export class OssController {
       return url;
     } catch (error) {
       this.logger.error(error);
-      throw new RpcBusinessException(ERRNO_ENUM.FILE_UPLOAD_FAILED, '上传失败');
+      throw new BusinessException(ERRNO_ENUM.FILE_UPLOAD_FAILED, '上传失败');
     }
   }
 
@@ -59,7 +59,7 @@ export class OssController {
       await Promise.all(tasks);
       return `${this.baseURL}/${target.replace('\\', '/')}`;
     } catch (error) {
-      throw new RpcBusinessException(ERRNO_ENUM.FILE_UPLOAD_FAILED, '上传失败');
+      throw new BusinessException(ERRNO_ENUM.FILE_UPLOAD_FAILED, '上传失败');
     }
   }
 
@@ -69,7 +69,7 @@ export class OssController {
       const res = await this.request.get(file);
       return res.data;
     } catch (error) {
-      throw new RpcBusinessException(ERRNO_ENUM.FILE_READ_FAILED, '读取失败');
+      throw new BusinessException(ERRNO_ENUM.FILE_READ_FAILED, '读取失败');
     }
   }
 }
