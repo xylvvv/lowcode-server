@@ -20,10 +20,7 @@ export class TaskController {
       return job.id;
     } catch (error) {
       this.logger.error(error);
-      throw new BusinessException(
-        ERRNO_ENUM.TASK_ADD_FAILED,
-        '任务添加失败',
-      );
+      throw new BusinessException(ERRNO_ENUM.TASK_ADD_FAILED, '任务添加失败');
     }
   }
 
@@ -35,10 +32,7 @@ export class TaskController {
       return state;
     } catch (error) {
       this.logger.error(error);
-      throw new BusinessException(
-        ERRNO_ENUM.TASK_FIND_FAILED,
-        '任务查询失败',
-      );
+      throw new BusinessException(ERRNO_ENUM.TASK_FIND_FAILED, '任务查询失败');
     }
   }
 }

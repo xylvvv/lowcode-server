@@ -1,8 +1,7 @@
 import { join } from 'path';
 
-import { Controller, Logger } from '@nestjs/common';
+import { Controller, Inject, Logger } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
-import { ConfigService } from '@nestjs/config';
 import * as Jenkins from 'jenkins';
 import * as ejs from 'ejs';
 
@@ -12,12 +11,10 @@ import { MicroServiceType } from '@lib/common/types/micro-service.type';
 
 @Controller()
 export class JenkinsController {
-  constructor(private configService: ConfigService) {}
-  private logger = new Logger(JenkinsController.name);
+  @Inject('JENKINS_CLIENT')
+  private readonly jenkins: Jenkins;
 
-  private jenkins = new Jenkins({
-    baseUrl: this.configService.get('JENKINS_SERVER'),
-  });
+  private readonly logger = new Logger(JenkinsController.name);
 
   ejsRender(file: string, data: Record<string, string>): Promise<string> {
     return new Promise((resolve, reject) => {

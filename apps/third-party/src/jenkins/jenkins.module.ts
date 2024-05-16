@@ -1,11 +1,22 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import * as Jenkins from 'jenkins';
+
 import { JenkinsController } from './jenkins.controller';
-import { JenkinsService } from './jenkins.service';
 
 @Module({
   imports: [ConfigModule],
   controllers: [JenkinsController],
-  providers: [JenkinsService],
+  providers: [
+    {
+      provide: 'JENKINS_CLIENT',
+      useFactory: (config: ConfigService) => {
+        return new Jenkins({
+          baseUrl: config.get('JENKINS_SERVER'),
+        });
+      },
+      inject: [ConfigService],
+    },
+  ],
 })
 export class JenkinsModule {}
