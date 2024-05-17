@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TaskService } from './task.service';
-import { TaskController } from './task.controller';
 
 @Module({
   imports: [
@@ -17,7 +16,7 @@ import { TaskController } from './task.controller';
       },
     ]),
   ],
-  controllers: [TaskController],
+  controllers: [],
   providers: [TaskService],
   exports: [TaskService],
 })
