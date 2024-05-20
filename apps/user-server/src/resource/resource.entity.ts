@@ -1,24 +1,27 @@
 import {
-  Column,
   Entity,
   PrimaryGeneratedColumn,
+  Column,
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
-export class Permission {
+export class Resource {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ comment: '主题', unique: true })
+  @Column({ comment: '资源名称', unique: true })
   subject: string;
 
-  @Column({ comment: '可对主题执行的行为' })
-  action: string;
+  @Column({ comment: '资源描述', nullable: true })
+  description?: string;
 
-  @Column({ comment: '行为可执行的条件', nullable: true, type: 'json' })
-  conditions?: string;
+  @Column({
+    comment: '允许配置的操作策略',
+    // default: 'Create,Read,Update,Delete,Manage',
+  })
+  actions: string;
 
   @CreateDateColumn({ name: 'create_at', nullable: true })
   createAt: Date;

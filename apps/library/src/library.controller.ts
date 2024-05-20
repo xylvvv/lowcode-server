@@ -49,10 +49,7 @@ export class LibraryController {
       );
       return data;
     } catch (error) {
-      throw new BusinessException(
-        ERRNO_ENUM.LIB_FIND_FAILED,
-        '列表获取失败',
-      );
+      throw new BusinessException(ERRNO_ENUM.LIB_FIND_FAILED, '列表获取失败');
     }
   }
 
@@ -108,10 +105,7 @@ export class LibraryController {
     try {
       const lib = await this.libraryService.findOne({ id });
       if (!lib) {
-        throw new BusinessException(
-          ERRNO_ENUM.LIB_FIND_FAILED,
-          '组件库不存在',
-        );
+        throw new BusinessException(ERRNO_ENUM.LIB_FIND_FAILED, '组件库不存在');
       }
       const { name } = lib;
       return await this.libraryService.getVersions({ library: name });
@@ -129,10 +123,7 @@ export class LibraryController {
       const { id, author, title, currentVersion } = dto;
       const lib = await this.libraryService.findOne({ id });
       if (!lib || (lib.author !== author && !lib.isPublic)) {
-        throw new BusinessException(
-          ERRNO_ENUM.LIB_FIND_FAILED,
-          '组件库不存在',
-        );
+        throw new BusinessException(ERRNO_ENUM.LIB_FIND_FAILED, '组件库不存在');
       }
       const payload: Partial<Library> = { id, title };
       if (currentVersion) {

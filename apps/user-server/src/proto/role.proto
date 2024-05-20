@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package role;
+
+service RoleService {
+  rpc Paginate(PageInfo) returns(PaginateRes) {}
+  rpc Create(CreateDto) returns(CommonRes) {}
+  rpc Update(UpdateDto) returns(CommonRes) {}
+  rpc Delete(DeleteDto) returns(CommonRes) {}
+  rpc FindOne(FindOneDto) returns(DetailRes) {}
+  rpc AssignPermissions(AssignPermissionsDto) returns(CommonRes) {}
+}
+
+message CommonRes {
+  int32 errno = 1;
+  bool data = 2;
+  string message = 3;
+}
+
+message PageInfo {
+  required string pageIndex = 1;
+  required string pageSize = 2;
+}
+
+message PaginateRes {
+  int32 errno = 1;
+  Roles data = 2;
+  string message = 3;
+}
+
+message Roles {
+  int32 total = 1;
+  repeated Role list = 2;
+}
+
+message Role {
+  int32 id = 1;
+  string name = 2;
+  optional string description = 3;
+  string createAt = 4;
+  string updateAt = 5;
+  repeated Permission permissions = 6;
+}
+
+message CreateDto {
+  required string name = 1;
+  optional string description = 2;
+}
+
+message UpdateDto {
+  required int32 id = 1;
+  optional string name = 2;
+  optional string description = 3;
+}
+
+message AssignPermissionsDto {
+  required int32 id = 1;
+  repeated Permission permissions = 2;
+}
+
+message DeleteDto {
+  required int32 id = 1;
+}
+
+message FindOneDto {
+  required int32 id = 1;
+}
+
+message DetailRes {
+  int32 errno = 1;
+  Role data = 2;
+  string message = 3;
+}
+
+message Permission {
+  int32 id = 1;
+  Resource resource = 2;
+  string action = 3;
+  optional string conditions = 4;
+  string createAt = 5;
+  string updateAt = 6;
+}
+
+message Resource {
+  int32 id = 1;
+  string subject = 2;
+  string actions = 3;
+  optional string description = 4;
+  string createAt = 5;
+  string updateAt = 6;
+}

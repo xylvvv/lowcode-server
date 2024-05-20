@@ -5,7 +5,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import DatabaseConfig from './config/database.config';
 import { UserModule } from './user/user.module';
 import { RoleModule } from './role/role.module';
-import { PermissionModule } from './permission/permission.module';
+import { ResourceModule } from './resource/resource.module';
 
 @Module({
   imports: [
@@ -25,7 +25,7 @@ import { PermissionModule } from './permission/permission.module';
     }),
     UserModule,
     RoleModule,
-    PermissionModule,
+    ResourceModule,
   ],
   controllers: [],
   providers: [],

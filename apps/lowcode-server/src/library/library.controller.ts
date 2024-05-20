@@ -11,7 +11,7 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 
 import { LibraryService } from './library.service';
-import { CreateLibraryDto, UpdateLibraryDto } from '../dto/library.dto';
+import { CreateLibraryDto, UpdateLibraryDto } from './library.dto';
 import { User } from '../decorators/user.decorator';
 
 @Controller('library')

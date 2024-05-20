@@ -7,7 +7,7 @@ import {
   ManyToMany,
   JoinTable,
 } from 'typeorm';
-import { Permission } from '../permission/permission.entity';
+import { Permission } from './permission.entity';
 
 @Entity()
 export class Role {
@@ -26,7 +26,20 @@ export class Role {
   @UpdateDateColumn({ name: 'update_at', nullable: true })
   updateAt: Date;
 
-  @ManyToMany(() => Permission)
-  @JoinTable({ name: 'role_permission' })
+  @ManyToMany(() => Permission, { cascade: true })
+  @JoinTable({
+    name: 'role_permission',
+    joinColumns: [{ name: 'role_id' }],
+    inverseJoinColumns: [
+      {
+        referencedColumnName: 'resource',
+        name: 'permission_resource_id',
+      },
+      {
+        referencedColumnName: 'action',
+        name: 'permission_action',
+      },
+    ],
+  })
   permissions: Permission[];
 }

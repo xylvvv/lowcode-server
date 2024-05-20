@@ -6,6 +6,8 @@ import { LibraryModule } from './library/library.module';
 import { ThirdPartyModule } from './third-party/third-party.module';
 import { WsModule } from './ws/ws.module';
 import { TaskModule } from './task/task.module';
+import { ResourceModule } from './resource/resource.module';
+import { RoleModule } from './role/role.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { TaskModule } from './task/task.module';
     ThirdPartyModule,
     WsModule,
     TaskModule,
+    ResourceModule,
+    RoleModule,
   ],
   controllers: [],
   providers: [],

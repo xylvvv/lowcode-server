@@ -16,18 +16,16 @@ export class AllExceptionsFilter implements ExceptionFilter {
       const ctx = host.switchToHttp();
       const response = ctx.getResponse();
 
+      const message = exception['message'];
       let status;
-      let message;
+      let extra = {};
 
       if (exception instanceof HttpException) {
         const res = exception.getResponse();
         status = exception.getStatus();
-        message = Array.isArray(res['message'])
-          ? res['message'].join('; ')
-          : res['message'];
+        extra = res['message'];
       } else {
         status = HttpStatus.INTERNAL_SERVER_ERROR;
-        message = exception['message'];
       }
 
       response.status(status).json({
@@ -35,7 +33,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
         message: message || 'Unknow Exception',
         data: null,
         timestamp: new Date().toISOString(),
-        extra: {},
+        extra,
       });
     } else if (contextType === 'rpc') {
       return of(exception).pipe(

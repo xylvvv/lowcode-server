@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -16,7 +17,7 @@ import { BusinessException } from '@lib/common/exceptions/business.exception';
 import { ERRNO_ENUM } from '@lib/common/enums/errno.enum';
 import { WorkService } from './work.service';
 import { UserService } from '../user/user.service';
-import { CreateWorkDto, FindWorksDto, PublishWorkDto } from '../dto/work.dto';
+import { CreateWorkDto, FindWorksDto, PublishWorkDto } from './work.dto';
 import { User } from '../decorators/user.decorator';
 
 @Controller('work')
@@ -51,13 +52,16 @@ export class WorkController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: number, @User('username') username: string) {
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+    @User('username') username: string,
+  ) {
     return this.workService.findOne(id, username);
   }
 
   @Patch(':id')
   updateWork(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() data: any,
     @User('username') username: string,
   ) {
@@ -66,7 +70,10 @@ export class WorkController {
   }
 
   @Post('copy/:id')
-  async copyWork(@Param('id') id: number, @User('username') username: string) {
+  async copyWork(
+    @Param('id', ParseIntPipe) id: number,
+    @User('username') username: string,
+  ) {
     const work = await this.workService.findOne(id);
     const { content, title, subtitle, coverImg, status, copiedCount } = work;
     if (status === 3) {
@@ -87,7 +94,7 @@ export class WorkController {
 
   @Delete(':id')
   async deleteWork(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @User('username') username: string,
   ) {
     await this.workService.update(id, username, { status: 0 });
@@ -95,7 +102,10 @@ export class WorkController {
   }
 
   @Post('undelete/:id')
-  async undelete(@Param('id') id: number, @User('username') username: string) {
+  async undelete(
+    @Param('id', ParseIntPipe) id: number,
+    @User('username') username: string,
+  ) {
     await this.workService.update(id, username, { status: 1 });
     return '恢复删除成功';
   }
@@ -122,7 +132,7 @@ export class WorkController {
 
   @Post('publish/:id')
   publish(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() dto: PublishWorkDto,
     @User('username') username: string,
   ) {

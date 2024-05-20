@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 
 import { User as UserEntity } from 'apps/user-server/src/user/user.entity';
 import { AuthService } from '../auth/auth.service';
-import { LoginReqDto } from '../dto/user.dto';
+import { LoginReqDto } from './user.dto';
 import { UserService } from './user.service';
 import { User } from '../decorators/user.decorator';
 
