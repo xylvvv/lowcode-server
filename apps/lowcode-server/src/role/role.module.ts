@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 
-import { AuthModule } from '../auth/auth.module';
 import { RoleController } from './role.controller';
 import { RoleService } from './role.service';
 
@@ -18,7 +17,6 @@ import { RoleService } from './role.service';
         },
       },
     ]),
-    AuthModule,
   ],
   controllers: [RoleController],
   providers: [RoleService],

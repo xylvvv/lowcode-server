@@ -30,7 +30,7 @@ export class RoleService {
 
   async create(role: Partial<Role>) {
     const entity = this.roleRepository.create(role);
-    // save会先查再执行（更新或创建）返回的是实体；insert只执行创建，返回的是执行结果
+    // save会先查（根据主键）再执行（更新或创建）返回的是实体；insert只执行创建，返回的是执行结果
     const res = await this.roleRepository.insert(entity);
     return !!res;
   }

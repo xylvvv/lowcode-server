@@ -5,8 +5,8 @@ export class LoginReqDto {
   @MaxLength(10)
   username: string;
 
-  @IsMobilePhone('zh-CN')
-  phone: string;
+  // @IsMobilePhone('zh-CN')
+  // phone: string;
 
   @Length(6, 15)
   password: string;

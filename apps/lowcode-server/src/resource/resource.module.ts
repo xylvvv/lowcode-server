@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 
-import { AuthModule } from '../auth/auth.module';
 import { ResourceController } from './resource.controller';
 import { ResourceService } from './resource.service';
 
@@ -18,7 +17,6 @@ import { ResourceService } from './resource.service';
         },
       },
     ]),
-    AuthModule,
   ],
   controllers: [ResourceController],
   providers: [ResourceService],

@@ -7,9 +7,11 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Exclude } from 'class-transformer';
+
 import { Role } from '../role/role.entity';
 
-enum Gender {
+export enum Gender {
   MAN = 1,
   WOMAN = 2,
   UNKNOWN = 0,
@@ -18,12 +20,17 @@ enum Gender {
 // @Unique(['username', 'phone'])
 @Entity()
 export class User {
+  constructor(attr = {}) {
+    Object.assign(this, attr);
+  }
+
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column({ comment: '用户名', unique: true })
   username: string;
 
+  @Exclude()
   @Column({ comment: '密码' })
   password: string;
 
@@ -56,7 +63,11 @@ export class User {
   @UpdateDateColumn({ name: 'update_at', nullable: true })
   updateAt: Date;
 
-  @ManyToMany(() => Role)
-  @JoinTable({ name: 'user_role' })
+  @ManyToMany(() => Role, { cascade: true })
+  @JoinTable({
+    name: 'user_role',
+    joinColumn: { name: 'user_id' },
+    inverseJoinColumn: { name: 'role_id' },
+  })
   roles: Role[];
 }
