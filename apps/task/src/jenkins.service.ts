@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { IJenkinsMicroService } from 'apps/third-party/src/jenkins/jenkins.controller';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class JenkinsService implements OnModuleInit {
   }
 
   async ensureJob(job: string, repositoryUrl: string) {
-    const res = await firstValueFrom(
+    const res = await lastValueFrom(
       this.jenkinsService.ensureJob({ job, repositoryUrl }),
     );
     if (res.errno) {
@@ -34,7 +34,7 @@ export class JenkinsService implements OnModuleInit {
     } catch (error) {
       throw new Error('params序列化失败');
     }
-    const res = await firstValueFrom(
+    const res = await lastValueFrom(
       this.jenkinsService.build({ job, params }),
     );
     if (res.errno) {

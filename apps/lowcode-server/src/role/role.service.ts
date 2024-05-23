@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 
 import { IRoleMicroService } from 'apps/user-server/src/role/role.controller';
 import { BusinessException } from '@lib/common/exceptions/business.exception';
@@ -21,7 +21,7 @@ export class RoleService implements OnModuleInit {
   }
 
   async paginate(pageInfo: IPageInfo) {
-    const res = await firstValueFrom(this.roleService.paginate(pageInfo));
+    const res = await lastValueFrom(this.roleService.paginate(pageInfo));
     if (res.errno) {
       throw new BusinessException(res.errno, res.message);
     }
@@ -29,7 +29,7 @@ export class RoleService implements OnModuleInit {
   }
 
   async create(role: Partial<Role>) {
-    const res = await firstValueFrom(this.roleService.create(role));
+    const res = await lastValueFrom(this.roleService.create(role));
     if (res.errno) {
       throw new BusinessException(res.errno, res.message);
     }
@@ -37,7 +37,7 @@ export class RoleService implements OnModuleInit {
   }
 
   async update(role: Partial<Role>) {
-    const res = await firstValueFrom(this.roleService.update(role));
+    const res = await lastValueFrom(this.roleService.update(role));
     if (res.errno) {
       throw new BusinessException(res.errno, res.message);
     }
@@ -45,7 +45,7 @@ export class RoleService implements OnModuleInit {
   }
 
   async assignPermissions({ id, permissions }: Partial<Role>) {
-    const res = await firstValueFrom(
+    const res = await lastValueFrom(
       this.roleService.assignPermissions({
         id,
         permissions,
@@ -58,7 +58,7 @@ export class RoleService implements OnModuleInit {
   }
 
   async delete(id: number) {
-    const res = await firstValueFrom(this.roleService.delete({ id }));
+    const res = await lastValueFrom(this.roleService.delete({ id }));
     if (res.errno) {
       throw new BusinessException(res.errno, res.message);
     }
@@ -66,7 +66,7 @@ export class RoleService implements OnModuleInit {
   }
 
   async findOne(id: number) {
-    const res = await firstValueFrom(this.roleService.findOne({ id }));
+    const res = await lastValueFrom(this.roleService.findOne({ id }));
     if (res.errno) {
       throw new BusinessException(res.errno, res.message);
     }

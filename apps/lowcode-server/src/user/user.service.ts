@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 
 import { IUserMicroService } from 'apps/user-server/src/user/user.controller';
 import { User } from 'apps/user-server/src/user/user.entity';
@@ -21,7 +21,7 @@ export class UserService implements OnModuleInit {
   }
 
   async create(user: User) {
-    const res = await firstValueFrom(this.userService.create(user));
+    const res = await lastValueFrom(this.userService.create(user));
     if (res.errno) {
       throw new BusinessException(res.errno, res.message);
     }
@@ -29,7 +29,7 @@ export class UserService implements OnModuleInit {
   }
 
   async findOne(username: string) {
-    const res = await firstValueFrom(this.userService.findOne({ username }));
+    const res = await lastValueFrom(this.userService.findOne({ username }));
     if (res.errno) {
       throw new BusinessException(res.errno, res.message);
     }
@@ -37,7 +37,7 @@ export class UserService implements OnModuleInit {
   }
 
   async paginate(pageInfo: IPageInfo) {
-    const res = await firstValueFrom(this.userService.paginate(pageInfo));
+    const res = await lastValueFrom(this.userService.paginate(pageInfo));
     if (res.errno) {
       throw new BusinessException(res.errno, res.message);
     }
@@ -45,7 +45,7 @@ export class UserService implements OnModuleInit {
   }
 
   async delete(id: number) {
-    const res = await firstValueFrom(this.userService.delete({ id }));
+    const res = await lastValueFrom(this.userService.delete({ id }));
     if (res.errno) {
       throw new BusinessException(res.errno, res.message);
     }
@@ -53,7 +53,7 @@ export class UserService implements OnModuleInit {
   }
 
   async update(user: Partial<User> & { assignRoles?: boolean }) {
-    const res = await firstValueFrom(this.userService.update(user));
+    const res = await lastValueFrom(this.userService.update(user));
     if (res.errno) {
       throw new BusinessException(res.errno, res.message);
     }

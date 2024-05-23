@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { IOssMicroService } from 'apps/third-party/src/oss/oss.controller';
 import { BusinessException } from '@lib/common/exceptions/business.exception';
 
@@ -18,7 +18,7 @@ export class OssService implements OnModuleInit {
   }
 
   async upload(file: Buffer, filename?: string) {
-    const res = await firstValueFrom(
+    const res = await lastValueFrom(
       this.ossService.upload({ file, filename }),
     );
     if (res.errno) {

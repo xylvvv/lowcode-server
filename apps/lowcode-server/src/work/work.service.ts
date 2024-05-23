@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 
 import { IWorkMicroService } from 'apps/work/src/work.controller';
 import { IPageInfo } from '@lib/common/types/page-info.type';
@@ -21,7 +21,7 @@ export class WorkService implements OnModuleInit {
 
   async createWork(data: any) {
     const { content, ...rest } = data;
-    const res = await firstValueFrom(
+    const res = await lastValueFrom(
       this.workService.createWork({
         ...rest,
         content: content ? JSON.stringify(content) : null,
@@ -34,7 +34,7 @@ export class WorkService implements OnModuleInit {
   }
 
   async findOne(id: number, author?: string) {
-    const res = await firstValueFrom(this.workService.findOne({ id, author }));
+    const res = await lastValueFrom(this.workService.findOne({ id, author }));
     if (res.errno) {
       throw new BusinessException(res.errno, res.message);
     }
@@ -46,7 +46,7 @@ export class WorkService implements OnModuleInit {
 
   async update(id: number, author: string, data: any) {
     const { content, ...rest } = data;
-    const res = await firstValueFrom(
+    const res = await lastValueFrom(
       this.workService.updateWork({
         ...rest,
         id,
@@ -64,7 +64,7 @@ export class WorkService implements OnModuleInit {
   }
 
   async findWorks(author: string, data: any, pageInfo: IPageInfo) {
-    const res = await firstValueFrom(
+    const res = await lastValueFrom(
       this.workService.findWorks({
         ...data,
         author,
@@ -78,7 +78,7 @@ export class WorkService implements OnModuleInit {
   }
 
   async publishWork(id: number, author: string, isTemplate: boolean) {
-    const res = await firstValueFrom(
+    const res = await lastValueFrom(
       this.workService.publishWork({ id, author, isTemplate }),
     );
     if (res.errno) {

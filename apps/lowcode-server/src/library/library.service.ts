@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 
 import { ILibraryMicroService } from 'apps/library/src/library.controller';
 import { BusinessException } from '@lib/common/exceptions/business.exception';
@@ -20,7 +20,7 @@ export class LibraryService implements OnModuleInit {
   }
 
   async findAll(author?: string) {
-    const res = await firstValueFrom(
+    const res = await lastValueFrom(
       this.libraryService.findLibraries({ author }),
     );
     if (res.errno) {
@@ -30,7 +30,7 @@ export class LibraryService implements OnModuleInit {
   }
 
   async create(library: any) {
-    const res = await firstValueFrom(
+    const res = await lastValueFrom(
       this.libraryService.createLibrary(library),
     );
     if (res.errno) {
@@ -40,7 +40,7 @@ export class LibraryService implements OnModuleInit {
   }
 
   async findLibVersions(id: number) {
-    const res = await firstValueFrom(
+    const res = await lastValueFrom(
       this.libraryService.findLibVersions({ id }),
     );
     if (res.errno) {
@@ -50,7 +50,7 @@ export class LibraryService implements OnModuleInit {
   }
 
   async update(library: any) {
-    const res = await firstValueFrom(
+    const res = await lastValueFrom(
       this.libraryService.UpdateLibrary(library),
     );
     if (res.errno) {

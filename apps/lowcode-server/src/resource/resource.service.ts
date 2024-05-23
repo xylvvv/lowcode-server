@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 
 import { IResourceMicroService } from 'apps/user-server/src/resource/resource.controller';
 import { BusinessException } from '@lib/common/exceptions/business.exception';
@@ -22,7 +22,7 @@ export class ResourceService implements OnModuleInit {
   }
 
   async paginate(pageInfo: IPageInfo) {
-    const res = await firstValueFrom(this.resourceService.paginate(pageInfo));
+    const res = await lastValueFrom(this.resourceService.paginate(pageInfo));
     if (res.errno) {
       throw new BusinessException(res.errno, res.message);
     }
@@ -30,7 +30,7 @@ export class ResourceService implements OnModuleInit {
   }
 
   async create(resource: Partial<Resource>) {
-    const res = await firstValueFrom(this.resourceService.create(resource));
+    const res = await lastValueFrom(this.resourceService.create(resource));
     if (res.errno) {
       throw new BusinessException(res.errno, res.message);
     }
@@ -38,7 +38,7 @@ export class ResourceService implements OnModuleInit {
   }
 
   async update(resource: Partial<Resource>) {
-    const res = await firstValueFrom(this.resourceService.update(resource));
+    const res = await lastValueFrom(this.resourceService.update(resource));
     if (res.errno) {
       throw new BusinessException(res.errno, res.message);
     }
@@ -46,7 +46,7 @@ export class ResourceService implements OnModuleInit {
   }
 
   async delete(id: number) {
-    const res = await firstValueFrom(this.resourceService.delete({ id }));
+    const res = await lastValueFrom(this.resourceService.delete({ id }));
     if (res.errno) {
       throw new BusinessException(res.errno, res.message);
     }

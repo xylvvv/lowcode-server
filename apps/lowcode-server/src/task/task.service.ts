@@ -1,6 +1,6 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
-import { firstValueFrom } from 'rxjs';
+import { lastValueFrom } from 'rxjs';
 import { ITaskMicroService } from 'apps/task/src/task.controller';
 import { BusinessException } from '@lib/common/exceptions/business.exception';
 import { JobStatus } from 'bull';
@@ -25,7 +25,7 @@ export class TaskService implements OnModuleInit {
     } catch (error) {
       throw new BusinessException('data格式有误，序列化失败');
     }
-    const res = await firstValueFrom(
+    const res = await lastValueFrom(
       this.taskService.add({
         name,
         data: dataStr,
@@ -38,7 +38,7 @@ export class TaskService implements OnModuleInit {
   }
 
   async getState(id: string) {
-    const res = await firstValueFrom(this.taskService.getState({ id }));
+    const res = await lastValueFrom(this.taskService.getState({ id }));
     if (res.errno) {
       throw new BusinessException(res.errno, res.message);
     }
