@@ -15,8 +15,7 @@ export class UserService {
 
   async create(user: Partial<User>) {
     const entity = this.userRepository.create(user);
-    const res = await this.userRepository.insert(entity);
-    return !!res;
+    return await this.userRepository.save(entity);
   }
 
   async findOne(username: string) {

@@ -25,7 +25,8 @@ export class UserController {
   }
 
   @GrpcMethod('UserService', 'Create')
-  async create({ username, password, phone }: Partial<User>) {
+  async create(user: Partial<User>) {
+    const { username, password, phone, nickname, picture } = user;
     const exist = await this.userService.findUnique({ username });
     if (exist) {
       throw new BusinessException(ERRNO_ENUM.USER_EXISTED, '该用户已存在');
@@ -35,6 +36,8 @@ export class UserController {
         username,
         phone,
         password,
+        nickname,
+        picture,
       });
     } catch (error) {
       this.logger.error(error);

@@ -4,7 +4,7 @@ package user;
 
 service UserService {
   rpc FindOne (FindOneDto) returns (DetailRes) {}
-  rpc Create (CreateDto) returns (CommonRes) {}
+  rpc Create (CreateDto) returns (DetailRes) {}
   rpc Paginate(PageInfo) returns(PaginateRes) {}
   rpc Delete(DeleteDto) returns(CommonRes) {}
   rpc Update(UpdateDto) returns(CommonRes) {}
@@ -12,8 +12,10 @@ service UserService {
 
 message CreateDto {
   required string username = 1;
-  required string password = 2;
-  required string phone = 3;
+  string password = 2;
+  string phone = 3;
+  string picture = 4;
+  string nickname = 5;
 }
 
 message FindOneDto {

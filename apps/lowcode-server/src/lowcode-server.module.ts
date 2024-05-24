@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
+
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { WorkModule } from './work/work.module';
@@ -11,6 +13,7 @@ import { RoleModule } from './role/role.module';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     UserModule,
     AuthModule,
     WorkModule,

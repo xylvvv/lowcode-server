@@ -22,7 +22,4 @@ export class NewPasswordDto {
 
   @Length(6, 15)
   newPassword: string;
-
-  @IsString()
-  verify: string;
 }

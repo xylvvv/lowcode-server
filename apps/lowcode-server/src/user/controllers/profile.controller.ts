@@ -44,10 +44,7 @@ export class ProfileController {
     @User('userId') id: number,
     @User('username') username: string,
   ) {
-    const { password, newPassword, verify } = dto;
-    if (newPassword !== verify) {
-      throw new BusinessException('两次输入的密码不一致');
-    }
+    const { password, newPassword } = dto;
     const user = await this.userService.findOne(username);
     if (!bcrypt.compareSync(password, user.password)) {
       throw new BusinessException(

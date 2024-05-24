@@ -31,10 +31,10 @@ export class User {
   username: string;
 
   @Exclude()
-  @Column({ comment: '密码' })
+  @Column({ comment: '密码', nullable: true })
   password: string;
 
-  @Column({ comment: '手机号', unique: true })
+  @Column({ comment: '手机号', unique: true, nullable: true })
   phone: string;
 
   @Column({ comment: '昵称', nullable: true })
