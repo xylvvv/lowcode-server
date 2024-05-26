@@ -25,7 +25,7 @@ export class RoleController {
   @Get()
   find(
     @Query('pageIndex', new DefaultValuePipe(1)) pageIndex: number,
-    @Query('pageSize', new DefaultValuePipe(10)) pageSize: number,
+    @Query('pageSize') pageSize: number,
   ) {
     return this.roleService.paginate({ pageIndex, pageSize });
   }

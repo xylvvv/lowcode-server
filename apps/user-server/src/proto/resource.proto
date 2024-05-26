@@ -16,8 +16,8 @@ message CommonRes {
 }
 
 message PageInfo {
-  required string pageIndex = 1;
-  required string pageSize = 2;
+  required int32 pageIndex = 1;
+  required int32 pageSize = 2;
 }
 
 message PaginateRes {

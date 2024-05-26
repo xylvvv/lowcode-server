@@ -28,7 +28,7 @@ export class UserController {
   @UseInterceptors(ClassSerializerInterceptor)
   async find(
     @Query('pageIndex', new DefaultValuePipe(1)) pageIndex: number,
-    @Query('pageSize', new DefaultValuePipe(10)) pageSize: number,
+    @Query('pageSize') pageSize: number,
   ) {
     const { list = [], total } = await this.userService.paginate({
       pageIndex,

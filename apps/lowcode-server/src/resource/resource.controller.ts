@@ -24,7 +24,7 @@ export class ResourceController {
   @Get()
   find(
     @Query('pageIndex', new DefaultValuePipe(1)) pageIndex: number,
-    @Query('pageSize', new DefaultValuePipe(10)) pageSize: number,
+    @Query('pageSize') pageSize: number,
   ) {
     return this.resourceService.paginate({ pageIndex, pageSize });
   }
