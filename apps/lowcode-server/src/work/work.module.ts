@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { WorkController } from './work.controller';
 import { WorkService } from './work.service';
-import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
@@ -17,7 +16,6 @@ import { UserModule } from '../user/user.module';
         },
       },
     ]),
-    UserModule,
   ],
   controllers: [WorkController],
   providers: [WorkService],

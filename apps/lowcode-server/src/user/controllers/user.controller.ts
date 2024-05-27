@@ -2,7 +2,6 @@ import {
   Controller,
   Body,
   Get,
-  UseGuards,
   Query,
   DefaultValuePipe,
   UseInterceptors,
@@ -17,15 +16,19 @@ import { User as UserEntity } from 'apps/user-server/src/user/user.entity';
 import { UserService } from '../user.service';
 import { UpdateUserDto } from '../dtos/user.dto';
 import { Role } from 'apps/user-server/src/role/role.entity';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { Permission } from '../../auth/decorators/permission.decorator';
+import {
+  PermissionAction,
+  PermissionSubject,
+} from '@lib/common/enums/permission.enum';
 
 @Controller('user')
-@UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private userService: UserService) {}
 
   @Get()
   @UseInterceptors(ClassSerializerInterceptor)
+  @Permission(PermissionSubject.USER, PermissionAction.READ)
   async find(
     @Query('pageIndex', new DefaultValuePipe(1)) pageIndex: number,
     @Query('pageSize') pageSize: number,
@@ -41,11 +44,13 @@ export class UserController {
   }
 
   @Delete(':id')
+  @Permission(PermissionSubject.USER, PermissionAction.DELETE)
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.userService.delete(id);
   }
 
   @Patch(':id')
+  @Permission(PermissionSubject.USER, PermissionAction.UPDATE)
   update(@Body() dto: UpdateUserDto, @Param('id', ParseIntPipe) id: number) {
     const { roles, ...user } = dto;
     return this.userService.update({

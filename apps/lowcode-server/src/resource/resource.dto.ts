@@ -18,7 +18,7 @@ export class CreateResourceDto {
   @IsString({ each: true })
   @ArrayNotEmpty()
   @ArrayUnique()
-  @Matches(/^([A-Z][a-z]+,)*[A-Z][a-z]+$/, { each: true })
+  @Matches(/^[A-Za-z]+$/, { each: true })
   actions: string[];
 
   @IsString()
@@ -38,7 +38,7 @@ export class UpdateResourceDto {
   @IsString({ each: true })
   @ArrayNotEmpty()
   @ArrayUnique()
-  @Matches(/^([A-Z][a-z]+,)*[A-Z][a-z]+$/, { each: true })
+  @Matches(/^[A-Za-z]+$/, { each: true })
   actions: string;
 
   @IsString()

@@ -19,7 +19,7 @@ export class Resource {
 
   @Column({
     comment: '允许配置的操作策略',
-    // default: 'Create,Read,Update,Delete,Manage',
+    // default: 'create,read,update,delete,manage',
   })
   actions: string;
 

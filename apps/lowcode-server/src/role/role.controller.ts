@@ -10,19 +10,22 @@ import {
   Post,
   Put,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 
 import { RoleService } from './role.service';
 import { AssignPermissionsDto, CreateRoleDto, UpdateRoleDto } from './role.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import {
+  PermissionAction,
+  PermissionSubject,
+} from '@lib/common/enums/permission.enum';
+import { Permission } from '../auth/decorators/permission.decorator';
 
 @Controller('role')
-@UseGuards(JwtAuthGuard)
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
   @Get()
+  @Permission(PermissionSubject.ROLE, PermissionAction.READ)
   find(
     @Query('pageIndex', new DefaultValuePipe(1)) pageIndex: number,
     @Query('pageSize') pageSize: number,
@@ -31,11 +34,13 @@ export class RoleController {
   }
 
   @Post()
+  @Permission(PermissionSubject.ROLE, PermissionAction.CREATE)
   create(@Body() dto: CreateRoleDto) {
     return this.roleService.create(dto);
   }
 
   @Patch(':id')
+  @Permission(PermissionSubject.ROLE, PermissionAction.UPDATE)
   update(@Body() dto: UpdateRoleDto, @Param('id', ParseIntPipe) id: number) {
     return this.roleService.update({
       ...dto,
@@ -44,6 +49,7 @@ export class RoleController {
   }
 
   @Put(':id/permission')
+  @Permission(PermissionSubject.ROLE, PermissionAction.UPDATE)
   assignPermissions(
     @Body() { permissions = [] }: AssignPermissionsDto,
     @Param('id', ParseIntPipe) id: number,
@@ -62,11 +68,13 @@ export class RoleController {
   }
 
   @Delete(':id')
+  @Permission(PermissionSubject.ROLE, PermissionAction.DELETE)
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.roleService.delete(id);
   }
 
   @Get(':id')
+  @Permission(PermissionSubject.ROLE, PermissionAction.READ)
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.roleService.findOne(id);
   }

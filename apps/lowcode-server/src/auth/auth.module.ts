@@ -9,7 +9,6 @@ import { JWT_SECRET } from './auth.const';
 import { JwtStrategy } from './jwt.strategy';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { UserModule } from '../user/user.module';
 
 @Module({
   imports: [
@@ -19,7 +18,6 @@ import { UserModule } from '../user/user.module';
       secret: JWT_SECRET,
       signOptions: { expiresIn: '7d' },
     }),
-    UserModule,
   ],
   controllers: [AuthController],
   providers: [

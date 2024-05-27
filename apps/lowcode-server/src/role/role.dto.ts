@@ -51,6 +51,6 @@ class Permission {
   @IsArray()
   @IsString({ each: true })
   @ArrayUnique()
-  @Matches(/^([A-Z][a-z]+,)*[A-Z][a-z]+$/, { each: true })
+  @Matches(/^[A-Za-z]+$/, { each: true })
   actions: string[];
 }

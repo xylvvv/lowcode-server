@@ -9,19 +9,22 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 
 import { ResourceService } from './resource.service';
 import { CreateResourceDto, UpdateResourceDto } from './resource.dto';
-import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import {
+  PermissionAction,
+  PermissionSubject,
+} from '@lib/common/enums/permission.enum';
+import { Permission } from '../auth/decorators/permission.decorator';
 
 @Controller('resource')
-@UseGuards(JwtAuthGuard)
 export class ResourceController {
   constructor(private readonly resourceService: ResourceService) {}
 
   @Get()
+  @Permission(PermissionSubject.RESOURCE, PermissionAction.READ)
   find(
     @Query('pageIndex', new DefaultValuePipe(1)) pageIndex: number,
     @Query('pageSize') pageSize: number,
@@ -30,6 +33,7 @@ export class ResourceController {
   }
 
   @Post()
+  @Permission(PermissionSubject.RESOURCE, PermissionAction.CREATE)
   create(@Body() dto: CreateResourceDto) {
     return this.resourceService.create({
       ...dto,
@@ -38,6 +42,7 @@ export class ResourceController {
   }
 
   @Patch(':id')
+  @Permission(PermissionSubject.RESOURCE, PermissionAction.UPDATE)
   update(
     @Body() dto: UpdateResourceDto,
     @Param('id', ParseIntPipe) id: number,
@@ -49,6 +54,7 @@ export class ResourceController {
   }
 
   @Delete(':id')
+  @Permission(PermissionSubject.RESOURCE, PermissionAction.DELETE)
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.resourceService.delete(id);
   }
