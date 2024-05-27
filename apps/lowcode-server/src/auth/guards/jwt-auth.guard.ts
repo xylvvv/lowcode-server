@@ -16,7 +16,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     return super.canActivate(context);
   }
 
-  handleRequest(err, user, info) {
+  handleRequest(err, user, info, context, status) {
     // 可以抛出一个基于info或者err参数的异常
     if (err || !user) {
       throw err || new UnauthorizedException();

@@ -12,13 +12,13 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 
 import { RoleService } from './role.service';
 import { AssignPermissionsDto, CreateRoleDto, UpdateRoleDto } from './role.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('role')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 

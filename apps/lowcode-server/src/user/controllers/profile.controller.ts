@@ -8,18 +8,18 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import * as bcrypt from 'bcrypt';
 
 import { User as UserEntity } from 'apps/user-server/src/user/user.entity';
 import { UserService } from '../user.service';
-import { User } from '../../decorators/user.decorator';
+import { User } from '../../auth/decorators/user.decorator';
 import { NewPasswordDto, UpdateProfileDto } from '../dtos/profile.dto';
 import { BusinessException } from '@lib/common/exceptions/business.exception';
 import { ERRNO_ENUM } from '@lib/common/enums/errno.enum';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 
 @Controller('profile')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 export class ProfileController {
   constructor(private userService: UserService) {}
 

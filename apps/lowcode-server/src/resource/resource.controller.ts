@@ -11,13 +11,13 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 
 import { ResourceService } from './resource.service';
 import { CreateResourceDto, UpdateResourceDto } from './resource.dto';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('resource')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 export class ResourceController {
   constructor(private readonly resourceService: ResourceService) {}
 

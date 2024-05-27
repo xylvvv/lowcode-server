@@ -8,14 +8,14 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 
 import { LibraryService } from './library.service';
 import { CreateLibraryDto, UpdateLibraryDto } from './library.dto';
-import { User } from '../decorators/user.decorator';
+import { User } from '../auth/decorators/user.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('library')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 export class LibraryController {
   constructor(private libraryService: LibraryService) {}
 

@@ -5,7 +5,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { createTransport } from 'nodemailer';
 import { createClient } from 'redis';
 
-import { JWT_SECRET } from '../consts/jwt.const';
+import { JWT_SECRET } from './auth.const';
 import { JwtStrategy } from './jwt.strategy';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';

@@ -8,7 +8,7 @@ import {
   WebSocketGateway,
 } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
-import { WsGuard } from '../auth/ws-auth.guard';
+import { WsGuard } from '../auth/guards/ws-auth.guard';
 import { TaskService } from '../task/task.service';
 import CloudBuildTask from './models/CloudBuildTask';
 

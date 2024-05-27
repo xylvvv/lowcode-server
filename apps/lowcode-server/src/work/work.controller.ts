@@ -10,7 +10,6 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 import { isEmpty } from 'lodash';
 
 import { BusinessException } from '@lib/common/exceptions/business.exception';
@@ -18,10 +17,11 @@ import { ERRNO_ENUM } from '@lib/common/enums/errno.enum';
 import { WorkService } from './work.service';
 import { UserService } from '../user/user.service';
 import { CreateWorkDto, FindWorksDto, PublishWorkDto } from './work.dto';
-import { User } from '../decorators/user.decorator';
+import { User } from '../auth/decorators/user.decorator';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('work')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 export class WorkController {
   constructor(
     private workService: WorkService,

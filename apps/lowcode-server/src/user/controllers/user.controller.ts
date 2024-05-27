@@ -12,15 +12,15 @@ import {
   ParseIntPipe,
   Patch,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
 
 import { User as UserEntity } from 'apps/user-server/src/user/user.entity';
 import { UserService } from '../user.service';
 import { UpdateUserDto } from '../dtos/user.dto';
 import { Role } from 'apps/user-server/src/role/role.entity';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 
 @Controller('user')
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 export class UserController {
   constructor(private userService: UserService) {}
 
